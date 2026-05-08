@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PAU Fertilizer App</title>
+</head>
+
+<body>
+
+    <h1>PAU Fertilizer Recommendation App</h1>
+
+    <p>Welcome to PAU Fertilizer App</p>
+
+</body>
+
+</html>
