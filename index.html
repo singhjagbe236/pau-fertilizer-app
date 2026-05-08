@@ -1,16 +1,1496 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>PAU Fertilizer App</title>
-</head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PAU Khad Guide — Fertilizer Requirement Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&family=Noto+Sans+Gurmukhi:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green-dark:#1a3a2a; --green-mid:#2d6a4f; --green-light:#52b788;
+    --green-pale:#d8f3dc; --cream:#f8f4ec; --cream-dark:#ede8da;
+    --brown:#7c5c3a; --text:#1c1c1c; --text-muted:#6b6b6b;
+    --white:#ffffff; --shadow:0 4px 32px rgba(26,58,42,0.10);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--cream); color: var(--text);
+    min-height: 100vh; position: relative; overflow-x: hidden;
+  }
+  body.pa { font-family: 'Noto Sans Gurmukhi', sans-serif; }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: radial-gradient(circle at 15% 20%,rgba(82,183,136,.12) 0%,transparent 50%),
+                      radial-gradient(circle at 85% 75%,rgba(45,106,79,.10) 0%,transparent 50%);
+  }
+  body::after {
+    content:''; position:fixed; inset:0; opacity:.4; pointer-events:none; z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
 
+  /* HEADER */
+  header {
+    position:relative; z-index:10; background:var(--green-dark);
+    padding:0 1.5rem; display:flex; align-items:center;
+    justify-content:space-between; height:72px;
+    border-bottom:3px solid var(--green-light);
+  }
+  .logo { display:flex; align-items:center; gap:10px; }
+  .logo-icon { width:52px; height:52px; }
+  .logo-text { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); letter-spacing:-0.5px; }
+  body.pa .logo-text { font-family:'Noto Sans Gurmukhi',sans-serif; font-size:19px; font-weight:600; letter-spacing:0; }
+  .logo-sub { font-size:11px; color:var(--green-light); letter-spacing:.1em; font-weight:500; }
+
+  /* LANGUAGE TOGGLE */
+  .lang-toggle {
+    display:flex; align-items:center; background:rgba(255,255,255,.08);
+    border:1.5px solid var(--green-light); border-radius:30px;
+    padding:3px; gap:2px;
+  }
+  .lang-opt {
+    border:none; background:transparent; color:var(--green-light);
+    font-size:12px; font-weight:600; padding:5px 14px;
+    border-radius:24px; cursor:pointer; transition:all .2s;
+    font-family:'Outfit',sans-serif; letter-spacing:.02em;
+    white-space:nowrap;
+  }
+  .lang-opt.active { background:var(--green-light); color:var(--green-dark); }
+  .lang-opt:not(.active):hover { background:rgba(82,183,136,.15); }
+
+  /* HERO */
+  .hero { position:relative; z-index:5; text-align:center; padding:3.5rem 2rem 2rem; }
+  .hero-eyebrow {
+    display:inline-block; background:var(--green-pale); color:var(--green-mid);
+    font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    padding:5px 16px; border-radius:100px; margin-bottom:1rem;
+  }
+  body.pa .hero-eyebrow { text-transform:none; letter-spacing:0; font-size:12px; }
+  .hero h1 {
+    font-family:'DM Serif Display',serif; font-size:clamp(1.9rem,5vw,3.2rem);
+    color:var(--green-dark); line-height:1.15; max-width:580px; margin:0 auto .75rem;
+  }
+  body.pa .hero h1 { font-family:'Noto Sans Gurmukhi',sans-serif; font-weight:600; line-height:1.35; font-size:clamp(1.6rem,4vw,2.6rem); }
+  .hero h1 em { font-style:italic; color:var(--green-mid); }
+  body.pa .hero h1 em { font-style:normal; }
+  .hero p { font-size:15px; color:var(--text-muted); max-width:460px; margin:0 auto; line-height:1.75; }
+
+  /* CARD */
+  .card-wrap { position:relative; z-index:5; max-width:640px; margin:2rem auto 4rem; padding:0 1.25rem; }
+  .card { background:var(--white); border-radius:20px; box-shadow:var(--shadow),0 1px 0 rgba(82,183,136,.2); overflow:hidden; }
+  .card-header { background:var(--green-dark); padding:1.25rem 1.75rem; display:flex; align-items:center; gap:12px; }
+  .step-pill {
+    background:var(--green-light); color:var(--green-dark);
+    font-size:11px; font-weight:600; letter-spacing:.08em;
+    padding:3px 10px; border-radius:100px; white-space:nowrap;
+  }
+  body.pa .step-pill { letter-spacing:0; }
+  .card-header h2 { font-size:15px; font-weight:500; color:var(--cream); }
+  .card-body { padding:1.75rem; }
+
+  /* CROP BUTTONS */
+  .crop-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.75rem; }
+  .crop-btn {
+    border:1.5px solid var(--cream-dark); border-radius:14px;
+    background:var(--cream); padding:14px 8px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    transition:all .2s ease; font-family:inherit;
+  }
+  .crop-btn:hover { border-color:var(--green-light); background:var(--green-pale); transform:translateY(-2px); box-shadow:0 4px 16px rgba(82,183,136,.18); }
+  .crop-btn.active { border-color:var(--green-mid); background:var(--green-pale); box-shadow:0 0 0 3px rgba(82,183,136,.2); }
+  .crop-icon { font-size:28px; line-height:1; display:flex; align-items:center; justify-content:center; height:46px; }
+  .crop-note { font-size:9px; color:#c0392b; text-align:center; line-height:1.3; font-style:italic; }
+  .crop-name { font-size:13px; font-weight:600; color:var(--green-dark); }
+  .crop-desc { font-size:10px; color:var(--text-muted); text-align:center; line-height:1.4; }
+
+  /* RESIDUE */
+  .residue-section { display:none; margin-top:.5rem; }
+  .residue-section-label { font-size:12px; color:var(--text-muted); font-weight:600; margin-bottom:8px; }
+  .residue-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .residue-btn {
+    border:1.5px solid var(--cream-dark); border-radius:12px;
+    background:var(--cream); padding:12px 6px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    transition:all .2s; font-family:inherit;
+  }
+  .residue-btn:hover { border-color:var(--green-light); background:var(--green-pale); transform:translateY(-1px); }
+  .residue-btn.active { border-color:var(--green-mid); background:var(--green-pale); box-shadow:0 0 0 3px rgba(82,183,136,.2); }
+  .residue-icon { font-size:20px; display:flex; align-items:center; justify-content:center; height:64px; }
+  .residue-name { font-size:11px; font-weight:600; color:var(--green-dark); text-align:center; line-height:1.4; }
+
+  /* FIELDS */
+  .field-row { margin-bottom:1.1rem; }
+  .field-label { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; }
+  .field-label label { font-size:13px; font-weight:600; color:var(--green-dark); }
+  .field-label .hint { font-size:11px; color:var(--text-muted); }
+  .field-label .badge { font-family:'DM Mono',monospace; font-size:10px; background:var(--cream-dark); color:var(--brown); padding:2px 8px; border-radius:100px; }
+  input[type="number"] {
+    width:100%; border:1.5px solid var(--cream-dark); border-radius:10px;
+    padding:11px 14px; font-family:'DM Mono',monospace; font-size:15px;
+    color:var(--text); background:var(--cream); outline:none;
+    transition:border-color .2s,box-shadow .2s; -moz-appearance:textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance:none; }
+  input[type="number"]:focus { border-color:var(--green-light); box-shadow:0 0 0 3px rgba(82,183,136,.15); background:var(--white); }
+  .soil-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+  .oc-or-row { display:flex; align-items:center; gap:10px; margin:2px 0; }
+  .oc-or-line { flex:1; border-top:1.5px dashed var(--cream-dark); }
+  .oc-or-text { font-size:11px; font-weight:700; color:var(--text-muted); letter-spacing:.1em; flex-shrink:0; }
+  .oc-estimate-note {
+    display:flex; align-items:flex-start; gap:6px;
+    margin-top:6px; padding:8px 12px;
+    background: #eefaf3; border:1px solid #a8dab5;
+    border-radius:8px; font-size:12px; color:var(--green-mid); line-height:1.6;
+    flex-direction: column;
+  }
+  .oc-estimate-note > div { display:flex; align-items:flex-start; gap:6px; }
+  .oc-estimate-note svg { flex-shrink:0; color:var(--green-mid); margin-top:2px; }
+  input.input-muted { opacity:0.45; pointer-events:none; }
+  .range-note { display:none; background:var(--green-pale); border:1px solid #a8dab5; border-radius:10px; padding:10px 14px; font-size:12px; color:var(--green-mid); margin-top:6px; line-height:1.7; }
+  .error-msg { font-size:12px; color:#c0392b; margin-top:5px; min-height:16px; }
+
+  /* CALC BUTTON */
+  .calc-btn {
+    width:100%; background:var(--green-dark); color:var(--cream); border:none;
+    border-radius:12px; padding:15px; font-family:inherit; font-size:15px;
+    font-weight:600; cursor:pointer; transition:all .2s;
+    display:flex; align-items:center; justify-content:center; gap:10px; margin-top:.5rem;
+  }
+  .calc-btn:hover { background:var(--green-mid); transform:translateY(-2px); box-shadow:0 6px 20px rgba(26,58,42,.25); }
+  .calc-btn:active { transform:scale(.98); }
+
+  /* RESULTS */
+  .results-section { display:none; padding:1.75rem; border-top:1.5px dashed var(--cream-dark); background:linear-gradient(180deg,var(--green-pale) 0%,var(--white) 100%); }
+  .results-header { display:flex; align-items:center; gap:10px; margin-bottom:1.25rem; flex-wrap:wrap; }
+  .results-header h3 { font-family:'DM Serif Display',serif; font-size:18px; color:var(--green-dark); }
+  body.pa .results-header h3 { font-family:'Noto Sans Gurmukhi',sans-serif; font-weight:600; }
+  .results-crop-tag { font-size:11px; font-weight:600; background:var(--green-dark); color:var(--green-pale); padding:3px 10px; border-radius:100px; }
+  .oc-result-badge { font-size:11px; font-weight:600; background:#e8f4fd; color:#1a6fa8; border:1px solid #b3d4f0; padding:3px 10px; border-radius:100px; }
+  .result-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .result-card { background:var(--white); border:1.5px solid var(--cream-dark); border-radius:14px; padding:16px 12px; text-align:center; position:relative; overflow:hidden; }
+  .result-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+  .result-card.n::before{background:#4caf7d;} .result-card.p::before{background:#e07b3f;} .result-card.k::before{background:#7b8ee0;}
+  .result-card.animate { animation:popIn .4s cubic-bezier(.34,1.56,.64,1) forwards; }
+  @keyframes popIn { from{opacity:0;transform:translateY(12px) scale(.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+  .r-label { font-size:12px; font-weight:600; color:var(--text-muted); letter-spacing:.06em; text-transform:uppercase; margin-bottom:8px; }
+  body.pa .r-label { text-transform:none; letter-spacing:0; }
+  .r-value { font-family:'DM Mono',monospace; font-size:28px; font-weight:500; color:var(--green-dark); line-height:1; margin-bottom:4px; }
+  .r-unit { font-size:10px; color:var(--text-muted); font-weight:500; }
+  .r-divider { border:none; border-top:1px dashed var(--cream-dark); margin:7px 0; }
+  .r-ha-val { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--green-mid); min-height:16px; }
+  .r-ha-unit { font-size:10px; color:var(--text-muted); font-weight:400; margin-left:2px; }
+  .r-negative { font-size:10px; color:#c0392b; margin-top:4px; }
+  .t-conv-note { margin-top:10px; font-size:11.5px; color:var(--text-muted); background:var(--cream); border:1px solid var(--cream-dark); border-radius:8px; padding:8px 12px; line-height:1.65; }
+  .results-footnote { margin-top:1rem; font-size:11.5px; color:var(--text-muted); line-height:1.7; padding:10px 14px; background:var(--cream); border-radius:10px; border:1px solid var(--cream-dark); }
+
+  /* FERT TABLE */
+  .scenario-tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .scenario-tab { flex:1; border:1.5px solid var(--cream-dark); border-radius:10px; background:var(--cream); padding:9px 10px; font-family:inherit; font-size:12px; font-weight:500; color:var(--text-muted); cursor:pointer; transition:all .18s; text-align:center; }
+  .scenario-tab:hover { border-color:var(--green-light); color:var(--green-dark); background:var(--green-pale); }
+  .scenario-tab.active { background:var(--green-dark); border-color:var(--green-dark); color:var(--cream); }
+  .fert-n-credit { font-size:11.5px; color:var(--green-mid); background:var(--green-pale); border-radius:8px; padding:7px 12px; margin-top:8px; display:none; line-height:1.6; }
+  .fert-table-wrap { margin-top:1.5rem; border-top:1.5px dashed var(--cream-dark); padding-top:1.25rem; }
+  .fert-table-title { font-family:'DM Serif Display',serif; font-size:16px; color:var(--green-dark); margin-bottom:.75rem; }
+  body.pa .fert-table-title { font-family:'Noto Sans Gurmukhi',sans-serif; font-weight:600; }
+  .fert-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .fert-table thead tr { background:var(--green-dark); color:var(--cream); }
+  .fert-table thead th { padding:10px 14px; text-align:left; font-weight:500; font-size:12px; letter-spacing:.04em; }
+  body.pa .fert-table thead th { letter-spacing:0; }
+  .fert-table thead th:last-child { text-align:right; }
+  .fert-table tbody tr { border-bottom:1px solid var(--cream-dark); transition:background .15s; }
+  .fert-table tbody tr:last-child { border-bottom:none; }
+  .fert-table tbody tr:hover { background:var(--green-pale); }
+  .fert-table td { padding:11px 14px; color:var(--text); vertical-align:middle; }
+  .fert-table td:last-child { text-align:right; font-family:'DM Mono',monospace; font-size:14px; font-weight:500; color:var(--green-dark); }
+  .fert-dot { display:none; }
+  .fert-source { font-size:11px; color:var(--text-muted); display:block; margin-top:2px; }
+  .fert-table-footnote { margin-top:10px; font-size:11px; color:var(--text-muted); line-height:1.7; }
+  .prev-p-btn.active { background:#1a3a2a !important; color:#fff !important; border-color:#1a3a2a !important; }
+  .prev-p-btn:hover:not(.active) { border-color:#52b788 !important; background:#d8f3dc !important; }
+  .dap-small-note {
+    margin-top:8px; padding:8px 12px;
+    background:#fff8e1; border-left:3px solid #f9a825;
+    border-radius:6px; font-size:11.5px; color:#5d4037; line-height:1.65;
+  }
+  .small-dap-warning {
+    margin-top:10px; padding:10px 14px;
+    background:#fff8e1; border:1.5px solid #f9a825;
+    border-radius:10px; font-size:12px; color:#5d4037; line-height:1.7;
+  }
+  .small-dap-warning strong { color:#e65100; }
+
+  /* FERTILIZER BAG */
+  .fert-bag-cell { display:inline-flex; align-items:center; gap:8px; vertical-align:middle; }
+  .fert-bag-cell svg { flex-shrink:0; }
+
+  /* UREA SPLIT SCHEDULE */
+  .split-schedule {
+    margin-top:1.25rem; padding:14px 16px;
+    background:var(--cream); border:1px solid var(--cream-dark); border-radius:12px;
+  }
+  .split-pk-note {
+    font-size:13px; font-weight:700; color:#7b2d00;
+    background:linear-gradient(135deg,#fff3cd 0%,#ffe08a 100%);
+    border:2px solid #f59f00; border-radius:10px;
+    padding:10px 14px; margin-bottom:12px; line-height:1.6;
+    display:flex; align-items:center; gap:8px;
+    box-shadow:0 2px 8px rgba(245,159,0,0.25);
+  }
+  .split-pk-note::before { content:"⚠"; font-size:16px; flex-shrink:0; }
+  .split-title { font-size:14px; font-weight:600; color:var(--green-dark); margin-bottom:8px; }
+  .split-rows { display:flex; flex-direction:column; gap:8px; }
+  .split-row {
+    display:flex; align-items:flex-start; gap:10px;
+    background: linear-gradient(135deg, var(--green-pale) 0%, var(--white) 100%);
+    border:1.5px solid var(--green-light); border-radius:12px; padding:12px 14px;
+    position: relative; overflow: hidden;
+  }
+  .split-row::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--green-mid); }
+  .split-row:nth-child(2)::before { background: #e07b3f; }
+  .split-row:nth-child(3)::before { background: #7b8ee0; }
+  .split-num {
+    width:30px; height:30px; border-radius:50%; background:var(--green-dark);
+    color:#fff; font-size:13px; font-weight:700; display:flex;
+    align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+  }
+  .split-row:nth-child(2) .split-num { background: #e07b3f; }
+  .split-row:nth-child(3) .split-num { background: #7b8ee0; }
+  .split-body { flex:1; }
+  .split-timing { font-size:13px; font-weight:700; color:var(--green-dark); margin-bottom:4px; }
+  .split-amount { font-family:'DM Mono',monospace; font-size:14px; font-weight:600; color:var(--green-mid); }
+  .split-amount-ha { font-size:11px; color:var(--text-muted); margin-left:6px; font-family:'Outfit',sans-serif; font-weight:400; }
+
+  /* CARD HELP TOGGLE */
+  .help-card-toggle {
+    display:flex; align-items:center; gap:8px; padding:12px 1.75rem;
+    background:var(--green-pale); cursor:pointer; border-bottom:1px solid #a8dab5;
+    font-size:13px; font-weight:600; color:var(--green-dark); transition:background .15s;
+  }
+  .help-card-toggle:hover { background:#c8ecd0; }
+  .help-card-body {
+    padding:1.25rem 1.75rem; background:#f4fbf5;
+    border-bottom:1.5px dashed var(--cream-dark);
+  }
+  .hc-section { margin-bottom:1rem; }
+  .hc-section:last-child { margin-bottom:0; }
+  .hc-q { font-size:12px; font-weight:700; color:var(--green-mid); text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
+  body.pa .hc-q { text-transform:none; letter-spacing:0; }
+  .hc-section p, .hc-section li, .hc-step span:last-child { font-size:12.5px; color:var(--text-muted); line-height:1.65; }
+  .hc-steps { display:flex; flex-direction:column; gap:5px; }
+  .hc-step { display:flex; gap:8px; align-items:flex-start; }
+  .hc-num { width:18px; height:18px; border-radius:50%; background:var(--green-mid); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .hc-list { margin:0; padding-left:16px; }
+  .hc-list li { font-size:12.5px; color:var(--text-muted); line-height:1.65; margin-bottom:3px; }
+
+  /* FOOTER */
+  .help-footer-wrap { background: linear-gradient(180deg, #1a3a2a 0%, #0f2318 100%); }
+  footer {
+    position:relative; z-index:5; background:transparent;
+    border-top:1px solid rgba(82,183,136,0.25);
+    text-align:center; padding:1.25rem 1.5rem;
+    max-width:800px; margin:0 auto;
+  }
+  .footer-line1 { font-size:11px; margin-bottom:4px; line-height:1.6; color:rgba(255,255,255,0.35); }
+  .footer-line1 a { color:rgba(255,255,255,0.45); text-decoration:none; }
+  .footer-line1 a:hover { color:rgba(255,255,255,0.7); text-decoration:underline; }
+  .footer-line2 { font-size:10px; color:rgba(255,255,255,0.22); }
+
+
+  /* PAU Reference Panel */
+  .pau-panel {
+    margin-top:1.5rem; border-radius:14px; overflow:hidden;
+    border:2px solid #d4a017;
+  }
+  .pau-panel-header {
+    background:linear-gradient(135deg,#1a3a2a 0%,#2d6a4f 100%);
+    padding:12px 16px; display:flex; align-items:center;
+    justify-content:space-between; cursor:pointer; gap:10px;
+  }
+  .pau-panel-header-left { display:flex; align-items:center; gap:10px; }
+  .pau-panel-badge {
+    background:#d4a017; color:#1a3a2a; font-size:10px;
+    font-weight:700; padding:3px 8px; border-radius:100px;
+    letter-spacing:.06em; white-space:nowrap;
+  }
+  .pau-panel-title { color:#fff; font-size:14px; font-weight:600; }
+  .pau-panel-chevron { color:#d8f3dc; transition:transform .2s; flex-shrink:0; }
+  .pau-panel-body { background:#fffdf0; padding:1.25rem 1.5rem; }
+  .pau-note {
+    font-size:12px; color:#5d4037; background:#fff8e1;
+    border-left:3px solid #d4a017; border-radius:0 8px 8px 0;
+    padding:8px 12px; margin-bottom:1rem; line-height:1.65;
+  }
+  .pau-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  .pau-table thead tr { background:#1a3a2a; }
+  .pau-table thead th {
+    padding:8px 12px; text-align:left; color:#d8f3dc;
+    font-weight:600; font-size:11px; letter-spacing:.04em;
+  }
+  .pau-table thead th:not(:first-child) { text-align:center; }
+  .pau-table tbody tr { border-bottom:1px solid #f0e8cc; }
+  .pau-table tbody tr:last-child { border-bottom:none; }
+  .pau-table tbody tr:hover { background:#fff9e6; }
+  .pau-table td { padding:9px 12px; color:#333; vertical-align:middle; }
+  .pau-table td:not(:first-child) { text-align:center; font-family:'DM Mono',monospace; font-weight:500; }
+  .pau-table td:first-child { font-weight:600; color:#1a3a2a; }
+  .pau-cond { font-size:10px; color:#7c5c3a; font-weight:400; display:block; margin-top:2px; font-style:italic; }
+  .pau-table-note { font-size:11px; color:#7c5c3a; margin-top:10px; line-height:1.7; }
+  .pau-compare-note {
+    margin-top:12px; padding:10px 14px; background:#e8f4fd;
+    border:1px solid #b3d4f0; border-radius:8px;
+    font-size:12px; color:#1a6fa8; line-height:1.65;
+  }
+  .pau-stcr-diff { font-weight:700; }
+
+  @media(max-width:480px) {
+    .result-cards{grid-template-columns:1fr;}
+    .r-value{font-size:22px;}
+    .lang-opt{padding:5px 9px;}
+  }
+</style>
+</head>
 <body>
 
-    <h1>PAU Fertilizer Recommendation App</h1>
+<header>
+  <div class="logo">
+    <img src="data:image/png;base64,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" alt="PAU Khad Guide Logo" class="logo-icon" style="width:52px;height:52px;object-fit:contain;border-radius:50%;" />
+    <div>
+      <div class="logo-text" id="logo-text">PAU Khad Guide</div>
+      <div class="logo-sub" id="logo-sub">Right Fertilizer. Right Time. Right Dose.</div>
+    </div>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-opt active" id="btn-en" onclick="setLang('en')">English</button>
+    <button class="lang-opt" id="btn-pa" onclick="setLang('pa')">ਪੰਜਾਬੀ</button>
+  </div>
+</header>
 
-    <p>Welcome to PAU Fertilizer App</p>
+<section class="hero">
+  <div class="hero-eyebrow" id="hero-eyebrow">Soil-Test Based Recommendation</div>
+  <h1 id="hero-title">Calculate your <em>precise</em> fertilizer requirement</h1>
+  <p id="hero-desc">Enter your target yield and soil nutrient levels to get crop-specific N, P₂O₅ and K₂O recommendations in kg/acre.</p>
+</section>
 
+<div class="card-wrap">
+  <div class="card">
+
+    <!-- HELP (collapsible, above Step 1) -->
+    <div class="help-card-toggle" onclick="toggleCardHelp()" id="help-card-toggle">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span id="help-card-label">How to Use</span>
+      <svg id="help-card-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="help-card-body" id="help-card-body" style="display:none;">
+      <div class="hc-section">
+        <div class="hc-q" id="hc-q1">What is this app?</div>
+        <p id="hc-p1">PAU Khad Guide helps you calculate the right amount of fertilizer for your crop based on your soil test report and target yield. It gives you crop-specific recommendations for Nitrogen (N), Phosphorus (P₂O₅), and Potassium (K₂O).</p>
+      </div>
+      <div class="hc-section">
+        <div class="hc-q" id="hc-q2">How to use — 3 simple steps</div>
+        <div class="hc-steps">
+          <div class="hc-step"><span class="hc-num">1</span><span id="hc-s1">Select your crop (Rice, Maize or Wheat) and, for Wheat, the rice residue management practice you follow.</span></div>
+          <div class="hc-step"><span class="hc-num">2</span><span id="hc-s2">Enter your target yield in quintals per acre.</span></div>
+          <div class="hc-step"><span class="hc-num">3</span><span id="hc-s3">Enter Soil N, Soil P and Soil K (kg/acre) from your PAU soil test report — or enter Organic Carbon % if Soil N is not available.</span></div>
+        </div>
+      </div>
+      <div class="hc-section">
+        <div class="hc-q" id="hc-q3">What you get</div>
+        <ul class="hc-list">
+          <li id="hc-g1">Recommended fertilizer doses in kg/acre (and kg/ha)</li>
+          <li id="hc-g2">Ready-to-use product quantities — Urea, DAP or SSP, and MOP — so you know exactly how many bags to buy</li>
+          <li id="hc-g3">Results in both kg/acre and kg/ha</li>
+        </ul>
+      </div>
+      <div class="hc-section">
+        <div class="hc-q" id="hc-q4">Important tips</div>
+        <ul class="hc-list">
+          <li id="hc-t1">Always get your soil tested before applying fertilizers — it saves money and improves yield.</li>
+          <li id="hc-t2">Collect soil samples after harvest and at least 2–3 weeks before the next sowing. PAU recommends soil testing every 2–3 years from the same field. Always use an approved soil testing laboratory for reliable results.</li>
+          <li id="hc-t3">If your soil nutrient level is high, the app may show zero dose for that nutrient — your soil already has enough; save the cost.</li>
+          <li id="hc-t4">Target yield should be realistic for your field conditions — over-estimating leads to wasteful fertilizer use.</li>
+          <li id="hc-t5">This app is calibrated for Punjab agro-climatic conditions and may not apply directly to other regions.</li>
+          <li id="hc-t6">Recommendations assume normal crop management; abnormal weather, pest pressure or irrigation constraints may alter actual fertilizer response.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="card-header">
+      <span class="step-pill" id="step1-pill">Step 1</span>
+      <h2 id="step1-title">Select crop</h2>
+    </div>
+    <div class="card-body">
+      <div class="crop-grid">
+        <button class="crop-btn active" data-crop="rice" onclick="selectCrop('rice')">
+          <span class="crop-icon"><img src="data:image/png;base64,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" alt="rice" style="width:52px;height:52px;object-fit:contain;" /></span>
+          <span class="crop-name" data-i18n="crop-rice">Rice</span>
+          <span class="crop-desc" data-i18n="crop-rice-desc">Target yield range: 25–35 q/acre</span>
+          <span class="crop-note" id="crop-rice-note" data-i18n="crop-rice-note">* excluding PR 132</span>
+        </button>
+        <button class="crop-btn" data-crop="maize" onclick="selectCrop('maize')">
+          <span class="crop-icon"><img src="data:image/png;base64,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" alt="maize" style="width:52px;height:52px;object-fit:contain;" /></span>
+          <span class="crop-name" data-i18n="crop-maize">Maize</span>
+          <span class="crop-desc" data-i18n="crop-maize-desc">Target yield range: 25–30 q/acre</span>
+        </button>
+        <button class="crop-btn" data-crop="wheat" onclick="selectCrop('wheat')">
+          <span class="crop-icon"><img src="data:image/png;base64,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" alt="wheat" style="width:52px;height:52px;object-fit:contain;" /></span>
+          <span class="crop-name" data-i18n="crop-wheat">Wheat</span>
+          <span class="crop-desc" data-i18n="crop-wheat-desc">Target yield range: 20–25 q/acre</span>
+        </button>
+      </div>
+      <div class="residue-section" id="wheat-residue-wrap">
+        <div class="residue-section-label" id="residue-label">Rice residue management practice</div>
+        <div class="residue-grid">
+          <button class="residue-btn active" data-residue="removed" onclick="selectResidue('removed')">
+            <span class="residue-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAe1ElEQVR42u2ceYxl2V3fP2e529vr1drL9OzMeGZsGBzwxpjI8TDGCANKMgI7IQuQxCZAIosgFCIlEgoQEgWwSKQsipAiEiUBJU5CokFICcaylWAbYmM8S/dMT2+1v/2uZ8kf91V1VVdVd/V4wZi5UlW9uu+ec8/5nt92fr/f+QnnnOf16zVf8nUIXgfwK3Z5f5RZ9WkbW2vx3iOEQAjxNQvQ3hyllEfmedy8xZ1koLUWpdTXLGi3A3Nv7re7bgugtRatayJ97rnn+NjvfIzrN25QVeXekiAQeO/2ukMI8J75Star5r2HY94ipMADwoP3bv6I2G+HB7/XUIj5cx72+93/6uY7xOFxHLhZ90t93+ERt1BXEASsra7x1Lc8xTPPPAOAMea2IB4LoPce5xxaa577zef4hV/4p6ysrPCtT72dR7/uQVrNxnyc4m6X9VCbvU+H51l/EByL+f79/YWbixTv/f6YPH7ew025VXPQTZCPEWdMZzO+8MJFfvtjn2Bza4sf+9G/xdNPP31bEI8FcI/y/tE//nl+87n/wT/86Z/mm775bfOhl4A7MH0OwnDg/t5U/a1Q3fK/OPD3Vtju9P9tmeuWsR1s64/5fk+nhoDgU7/7SX7y7/4U7373e/g7P/7jJ4J4BMA98H75n/0yv/Vb/5P/9B/+I1IJqtmwViDIOQvN2YgTcMTj/XzQ4hbs5uM/QHAHiFPgHSB9zbIIhDi6CIfZd+8ZwM+fEx6QB8TLvH8vDi+bmIsJz02R4R262cVaz7PPPsu7/sy388Mf+tCxIB4C0DmHlJLPfu5z/OiP/jDP/cZ/JdBgywKl1VGN5A8Mwvsa3H2ZNQeFA3LsCNhiPtHT0JM4KOJqkI+03WPTeb9egPTgbr6n7sef0Ib9dtYadBhRlJ5nvuN9fOSXfpknnnhiH6Nj7cA9Ff6Lv/iLfPjHPkSYtDFljtLHWzv+oH3kaznk8ftKZB86cQtoHKSS08jOvUnPf7uDkz+OFedSVOytsD/Qz8FmB1hD+JtAAkppTJETNTr87R/5G/zSRz5yUyEeZ0h779Fac+PGDba2Nvj2b38GV+zOtfBJE/WHvxP+KDD+AFvdBrSD+uj2JpO/SSkH37/3jjn1HUv1c0CFr60HcaLkrPtVWuPKAe997zNsbFxnY2MDrfUhEOVB9gX49Kc/zQP3X0BHPZxxNycnDgOxR3XHyuxbB33LZI7g4wXeiZMt/iOg+5uU7G9DzV4cu/aew+bQwcHfCrw3liDuc+Gec3z6M585hNVhCpw3vHFjnbXVlVqY7wlsd3AgJw3a34U1cwxA4i59GnvUJDgZbOFPWNibimhP1BwUCfVuq14AN+f5tZUVbty4wSENdkgGzu8Za/aN50Oyal/gv4bJvuZL3BHEY1nVi5PbC44xq24VSQeUyvxSWuGsPdJK3nbM4jZsd5JWPdjYfwVAPJE6xSH5eFOu+mPswMPc5d18l+PvPA552uH606BxK0uf0NkhJeHFbRbB85p34Lew8gFz8PYKap+Ta04T4vbgyNP092V1C4nbKAwv8F8qcSFuXaAD2vsWDX78xI8fhz5uu3pXbHv70d4FqsessPBfwkX0p6DUY6wDL+7SoSqOB/PuB+u/7KLudLL4iwBZeA5tVv1dsvBdU6AXX2Ikvhj5J44HUrxGZkK8BhnIKZTAV0pw3vWk/YmK6bXR5PGaW95u/v4EHj7p/lfOPjzlrL8U4zno9jmVDMR/VRDRl56l75aTTifH5B35/mv4uslJ4o4UeJLzQX551eEfJzTFHa0Df6qdiPijooKvPhY/1vC+BSN5exPuyz+5r4pwqeeOfkp/wmZDHjeR/Y9focndiQr/KKl0Xwmf4PuUtw7ykIPoKzTuO1HhVwOV+hN2JF/UTuS2lOGP2pR7P3+sLKA7cKM+Tu3srfgXNVfxVSjrvhgWvhs78LRU8ichX+ZOU5Svm4G3IRov9vNrTiIqeStw4qvNMfBlM5rvnLp2Myg1D7AdA6I8DVb+lHLiNM/5g5+9P1HW3nrv2PCPv1sq28PvQCqHP/o+fxCreXBE7OWz3MLWx3qk976XUuynhO23vCXDink2w378QogTZyaOBKnEiXJm//t5Ppo4quoODOwOCUjzMe31KbhJWXsO0yOB/fl7laypVYpbQrsna2FPZT2l9VQVaH+nzKo9jT2Ppc7ve38wIHNTqx+3BnspE3tt6u/FgbmLE3niZjKcOGaMR4V73bfkaGbYYftLCIn3YAwEoac0x4dzjwDYanf4hZ/9B/ze//ovlJXZn4BWAmPrSUoxT5+YT1RJkEJgXJ1XKIWcB6RvAiIFaCX2wbMOrDtMtUIKnKtXXcw5pjKu9oTMM8EOsr0SoFTdl+cw8AeF/l6gfI+7tBI4X5vGztXPSlm3c87vL6iSAmMdYRDw+y9c4e//3C8d6fsIgNYLFljnQVUyyEqiQKGkYDQxJLFEzSfp8IRKUlnHjZFAS8tiJIgiTWUcWkoQvh6AkhgPVzYtoRYU1rPakjQjiXN+nk7rcEbQjBXrY8s4s/QjQaepkbIG3vk5mHiEhGEBW6OK8wuaWO/FcmsgtBII7/ECrPd4J9BKYqzj6pahEQpagSCO1HzhHM5DqCWz3JBZTyQ8SRzQ1IqrYoD18nR2YBCEoGJ0mNDrNpj5ELeyysA1SJpNVJQQxgkuaPCFYcgjb7oH211iGvWQKsKrCCc1cSPBEDGpAsaF5qmnH0X0Fvjmpx6mFBFKR4ggIkoSokaTuJEwKxSd1SWefPtDjFsLlDLByYDUKZJGQrvdYNckXK9ahL0uf+7Zr2eQB/R6LZJmQuEVUZKQ+phLs5BBGZKWAUGUUKEZ55o/9Y4HUf0ldsI+MxeighCvQqIkZquM2KJFsrJM0V1hWAQ4GSBUsC8iDmrsYwLrtUQJFUwK+MMbFdcHFR/6wP30ewHjaUFeljRCybSwvPmbz6CF5Y2PLrC22qIsDQstTSNSTKeGIorp3LPAeGpYiC1ri5p+K8BWlqwqmeUl1joC6SkMXK0CLI7VruTt37CAtYZAQSuS5KVlMito9yK+7V3nyUvHPUsanGV7mDLLDL2GRErHKLd8z3c9zHYlCVZ67IwqOrHEOctiS9Ff0Pzpt61ijAXvUNIjnEMnAc++7wG2d2b8he+5QGEdjVgdEr3HZmfdNJE81nvKymG05gPvf4xJ7shTS5oaEi2JA8VwWuCMoaEk0lcEyjEbp4DjyuaMrLIY67jvfJP3PnWOyaxkljk6nYjRJEML6DQieq2IsnJMs4KdYcF3Pn0/jWZAPp1RVoqychTGkZUWBCSxJp+VhFoSxgGDSYWSgiQMqJxjVniwEEhPKxQsL8W8861rFKVBSIkUMJhaep2YyajAG4eQgqx0FJUlxCGAysB0UuKMJS8NgjsZ0rdcStYSdrkXokKNQHB5t+JaKhBCEgYK6T3OeiwSLzW2MkSBotsM5xrVs72TU1kIAkmWWbqdEGtrBXFjkDGZlYSBIgpDEi2YTac0k9pkKCuLEp5WrGhEEiUEeekoC4P10O1qJjMzl4l1m8GsJDMWYxxpXtFuBezuVnjv2J7kCOGxxrDQDShLQ6AE2+OcvLQEgSTNKozzJM2Qql4z4kDXSvFUYU0Pwnucd1SFIcstjWbAcJjx2CMLvPHrVxlPSjqNkNJYrlze4dq1GevXxmxupxTWs9gJCZSkNJbJuECHCqEEg0lFsxEwHOU451npRvRaAVoJJlkFAtLU0muHTHOPciUK2J2WNGNFXlkmeQXWUhYZZ3uSNK3wHsZZRTMJONNLiKQkkIKy9PR7EVlakoSS5W6ER7AzrojikN1hjveO80tNzi0l5KWlLCqEt8SJpMxNvRCFQZ6wxdUneVKaSQgupSwtvU5AXjgWOjFVWhFqQVo4ziw2KMqyNjV2Sx5eDrFIfv9KTqQFF3oJW7nHGEsYKbKtERdHU4ajHKVrW2uUGsZTw9mliF1TMBqVxIlmd2gIlSMtLGvtiElWa+mlVsyr2xmvXJ4Su5x1V+K9Z7Ed4j28uCtotkN2piOM9XQamsk4J1AS5wSBFqSbIy6mGdNRhtRQGseNnZJeQxFrqCpPqxkyzRyBkvtWwOniwnMEh9OcWVYynZUs9SPyoiBJBONJjlKK67spu5OCKFDEoWJSCS5NJS9ez3jPex7giSfPcH03xRpLZRz9XgNXVgx3Jqx1NEudkCKvmKmIB77xPFcHloVOwGh9wPDKLm4wYbIxYKETsNgOGc0cbrHH1Vyx0NSMrw3ZXi+YbUxY7AVMU8Mr12Y8/oYFPvxDb2BnXOFMxUIvJCs8wns2BilhIIiEo0wzWloQBwGbQ0P33iXyMKYoHVJ7VpcSKlObQ+rAoZ5TASgQtBsRrUhTlJ61pRBb5LQbmiqviEJFOwkItKBynjBQZE7wA9//OFszywNnY5a7AZFWVKXFCwgihbWeRiNkc+J4cSC4sut45P4Wz37bOUxl0UoinCfLK4JA0k4CpAr41CsZFzcqPvR9D/HowwsY45EK8qpCK4+3gqFqkDbaTKc5tjBo6fiDz2/y/Oe3uHZ1l3Fp6TZj2o0QBJRGsGECqnaDq9sFf/m77+fMaovdUcqVy2NmgxmXLm0xK0qEkPMt3WkBFFAZT1pWXLw8ZDrMuXR5wsuXhlzdnCKk52w/IQ4064OUrVFGnhvaoaDdCqmsZzyt5rsNy6c+8Somy0mNo98KGJfwI3/9CUohkFJxbaPWykVlGaYVs6JiZ1xgrOfasOL7PvAEQStkMi6YTnOkFESBotWI0EpRlJYnn1jkz77nHqapI7eepU5ImFfMNkYshbDSi6msYzgzRKGmKCxPPtHnA995P8OZwVQVw1HOfSsx6y/tkG9O8KOUM/0Ya9389NMpZaCfb8nWFkI2L+3MD9h4nM1Z6wS8sl0hMNy3FHJmoYGWgkleMJ5WNDsR3gvy3BJpyWo/Ybg+ZamhKK1kMC6pSk8SKOJEE0eSIjOMZxX3r8Xct6apKkdReaJAILzj3pWEZquWr1XpUQLywjDNDK1GRBwqdndS1pYivBA4W283dSCofL2TCqRgY1QwySrGqaIZaDa3UpSSOKmQSlEUhn47ZFRYhpOCONR0Gnru0xCnjAsj8BKch04S4pxlOMuQUrA0lzVf/5Z7eOfTD/LKVoHznmFa4K1jOsnpdQOshbJ0aCXYmeRsjDNmhSXSAiFBeUc6TYkTTRIrNnczilaDzcxT5IaNYY4Ujk5DI71nNCrotBXeW8rK0E4UxgkqC3lZIQRMJiWNWKA0VJVFCRBSsTUueenGhJ1pybmlhIfOtFjphMSBZDioiGNJ3AxwzjFJK67tVkRa004C4kCipSLSEndqO3DuoFBSYp0nCjWr3QaT1HJxvWSaO976eI+3PdGlNJ5mpOk1IpJQsj0oWFtu4G1FWVRU1pGEknNLLeJQc3GjJCslWgpG44pWSxOGiuG45DvedT9KSaSQnF1sUBrF717KGaWWWWZY6kV453DG8/mrOVJI7j/TYmUhIYkks2mJVpJGoimNo7K1vXdhqcG9Ky3aiSbNLc6BcTArKyaTAjy0miFlYdjOPP0H1xjNDGv9GIDLW1O2JsW+s+GOAHpq8i+N48rOjN1JwWBqCFcXePTNF9gYVFgLm7sFAphkJdeHOXjHaFKy3JVYB3lRW6FSQKzh+m7Jm95ygeUH+uyMSqZTQ6cd4eZejzydMZ2U6ECQ5oYtq/jhD34jowJm04KFboRSmksbBe9490NkccL2MGdnlDPJKtLU4JE0Y01ZGIQQzHLH9Z2CJFRoJbk0kbyaKfJKcG6xgTOOojCsLIYMJxVrKwlvf2OXyaxkmpYoJek0ApqRpj4R509nSANoLVnuxPRbEWVpedPDXX7gu+9hnHvCUFIaiBW0I0U3USSxZn1zSlNVRJGkrCyRVmzmiosTxfqw4ru+ZYk3P9bHecFsZljoaKI4JA49Pp8SKsFoVrI9zEik41vf1GZ1KWZ7ULDYizHGkVeOZ9+9xtpihDEe50Er8NahlafXDdBaMM0sVatN//5ltsaGGzsl73v6Ah/+a09wZbtACXDWMplZzq8mjMYFF860eOmVMe1EI6VCCui3QuJA4d1dbuVCLUlixTQvKY3hxZdHOOcJIoXw4Izj6rDi4gCUDBACdtcnfPazAz7+O1fJxhmXtzKe/MY1fuyvPsb6oMR6x42NGUp4XrwyRjvDeJSyvj7j+YtTdicZrTjgwbNthhPD9Z2Sfj9mMitY7QcgLToQ5EXF7iCnGUkWuzFRqNkc5fzhCyM2r474f3+wy2BS8NYnl/jg9z7A5qigNIaljmQ2nhFpzzAr8c4xzTxnlxPSzHF2NWY4yGknimu7GS/dmHJ5K6Wyfn7AUBzxxujjTJi90ztKCppxiHCC0aggCiVBoJBYhqOM/pkuf/EDj/Cv/9Xv8ejZkJbxVJVnsJmy0tKEPmY2zlnpKqRWhFoyTR1RJJhsjql2FIIhxnli4zi/GOEcKCnQ3rG9m/HgPQ2+8MKQzc0ULR2hBB1q0tTQ0rU/sbSeh1ciXvrsOlrB5a0Zj11o8vzFMU990xJJEmIKQ68bc209pRUruq2I8nrGpStDvDVsbhacu3eRi1fGnEs8Z3oNltv1pl0KceD0+528MQikFOyMSy5vzFBSstKPmc1KnHW0WiHWwXhmOLcS043rCEwUKRCCzXHBzrQgN7UbaGtQEIY1gBLJZFZy70pCv6lxzpGXtZO11wmQQvDq9oxXt1OUd1xdz3nk/i4vvDSivdjmyoahG9fniYvcMistm8OMRqhpNzTjrGSUGdrNgE5DMRjmJIEmigKMg05LszvMsZVjPKk404/4/KdvcPEPttm4POIzH3+F0JSMc4vWYJxnmle3Da2dGFhvRpqlTi3k3XzAWeXpdiOs92SFY6EbsbFdIbxje1gwnJacW0y4sNxASpDSMx6VCAGtVogDZqnlhasZZSVIS8vOtGCcGoSvPTzL3ZhOIyAJBdc3p6wuxsyM4Af//EPcd28HHUiqymCNp90I6DbD2nukBL1mRLcRMJ4ZlBRMxgXOOhoNjfGCTktzfSNjm5gdH9GKQpqRQApPvx2xkGgeWGux3IkoSkugJM1Io6Q48dDSsSeVvIdACZJIMZyVbAxTbGUYTwyrSxHWefLKs9ALGI5LQiVwQhAE9cZ7khle2UgZpSVFXlFWjoWuBuG5MSx44m0PsD51rHRCHjrTptMMuLo9ZWec005qT06o4cZmTq8bIpQgTUs2tzIW2iFpVuGdJdSSSWa4tDHl6lZOEinCQDLLS5z35LklM45OJ8R6aDcCnr885fu/+z7e9PgiO6OaO6JAMy0MlzanPH9tRFZaoqgOJUwLy7So5t4YcbrkIiHqPa5zsNyJObPQQDjP9ijnzFKCcwJrHb1OyHBc0IgUvUZEqBR5aekkIReWmiy2IkxlSbOKM8sxVVUb19/xLUs45ylKUwdxAK0kah5j8QgaccD2bkmzERAlAVrCdFbRaQekhQPn6kobShEqSaDqWI1EcGaxSa8d4o1lPDH0uxHO1z7OaW44uxLxystDFlq10e/xSGqN220ESCUQDmZ5xWBaMsvNiQkbJxbeCbRgfViRV461XkQcCDa3c9ZWGnWUXkC3pblyZUKoJeO05PpOCnjiSLPUiZFK4I1jNHWs9mMmk4L+QszObootKpJ+TDq3F88uNvHec3U7ZXdacr4fk04KEIJ2J6QqLUVhWeyGTGdmf+8caUF/OQEku5OSzXEOHu5daaCEZ2dY0OsFGCGwViCVpJlIdnZz7usqdqcl47RisROx2Inx3jMrLJV1LLQiOs2QJJAYPz7WoapPykWwxmNdHVWbZBWhgq2dgrXVBkqAFp5GJGvtHEiCQPLQ2TaV8eSlRQmBkLVC2h0b1hYDhoMxy/2Q6axCCcE4N1zZTskrR7cRsNZL6LdDus2AVqTY3i7xHh4430QIz2BaEYSK0bSiMo5ZYdidlKwQ04hq8bHYCsnLWnuGEnZ2czrtiDAOmWUVy/2IvBDMJgWjoA4F9Oe+xHFacmOQU5T1sdalbsRyN9mvD8FpSz95D0pJVrrxPPYq2XY5g1HJ4490GU8N7U5MI5GkmcXlFaNhRScJWOlGNKKQnUlBZUB6xyyzLC+1GIx2WVpoM51VJIEgCRXn+g0q45BSoKQgCmo23hoXrO/kXLoyptcKuHQ1I5CWFz+/SeYkxhsCFXPvcpNZXnFjkLPQ1Cy0kvnCG0IN24OSRx9s02mHTGclD93TYnM7IxSOVpJQWSiNJ9B1MG2xFc0dxpY4VHhX12gQ4vg8/SMASinx88yCSVrSjDRpabg2SKleHdEMPdfWZ5SVZ7IxYGNryoK2XFhs7K9UWTkirfBAZjI+9+IuC5HjytVdHnpDwqVXpwzTgsVeQK8VgPcY6ymMIy1BC0ErDnn8vOKjv/4FCuP56LVdnrzQRHiPwvHo+Q4ST1ZYbgxyjKsD/Y04oDSWrKx/Xr425bGH2yz1AwaTkm5H89LlIa1YYT28sjGlNJ5z/YR+J6Sd1PK90wyYZZbNUca5fk2FQt4mN2bPul5ZXqH09e1eM0RJgbRwz0oTWRa88ofbtZfWw2AGDy4EIAKUFOxMS3YmdfxitRsDgtVexLXn1xnFGuPgC5+6xqxw9Nohbi4ilJSgQJia2rUU2MIRaUkcSnqNWtfdGORsjAqakeJcPyFMFJH3XFhuEqg6lWFnUpCEmlYcMoksk40x/+2jM5x1/Pp/vkia1U6OSVmRZJKz/YRAS0IlqIzl+rgOUexxX6BkXW7Ia1ZWVk7OjdmrhfL4Y4/hkkWyIuPasMQ5x9l+g5VeLfCH0xIqWGiGKFWneNjK8er2DOs8y52YcVaSlpaVdkQnaWCsZZxVtBJNHGq6DUdpPNd2U7LC0GkELHdiojDAGMuV7RmDmQHviELNcjui3w5oxop7w8bcOSBwtnZ6SFWnklzfSZnkBuMcFxab3LfcZJwVBHhirbCVZTGpI2xLjTqDIgo0eWW4upMxKy1SSmIteXlzxr3LDZbaMWVZ4ZNlHn/DGw5hdYQCrbWcO7PCI0++k1c/92ss9ztM0gIPGOMZzkq2xhlaSrSqQawdD4q1hQaBEkghWeqEVNZxdZgjgU5D04hCKmNZH2Q0QoVSikao6yC+VuxV6qkVQUSvGTJOa2XhvMd6SKIAZz3bk4LhrBYvy52IUCu895ztN/De1/HdQGGtIyscRJJGJEmLkuujnH4zpBkrnPdUxlIZj1aSbkOx1I7QSvLy5oQbuxmPnAt5/tqYR558D2srS0eqFx2qXLRX9um3P/5JPvi97+L73rLErLAYa/AIQqnmBb9qMp7mdUixGWuUlAxnOQJBtxFyfVCbI4GSrPQSFtshG6OMvKiDTGsLCZ1GTcVlabAOstKSV7UdGWiBdbVrLdB14lJROq7vzjCuttms8yx2YySQFYZpbmjFml4zICst47Si0wjRUnJtN2VrXJBEispYljsRa70EO7cP62QlQWHqALtWdcZXM1L8u/+7y7/5td/mHW/9ptsDeBDED//ET/Lxf/+zPPPm83zu8hBjLReWmvRaIcZ6NoYZo1ltJ7ZizfnFhEAdLlponEPukbzwSFF7NIy1CLGXQla/fpQatka1MjDWcWGpSbcZkpeG7XFOFNTUkZW2NpuUxHqPVgrrLFe3UyZ5XSRyrRvRbYZsT0r67VqrZrnFeEcjrFm3zgDzjLKKykKvUXupjfMMJzmNOGSll/Drn7jMt77/J/gnP/ezd66ddfA4gvOe7/8rf4lL//tXedcbV8lNnfaltZjXlqqN6ay0SFG7v7QUbE9LsrxidSEh0rLe7Ech3VZQa+W83n3UgXLHtZ2UZqznRizYud3ZSgLiQDEtKqZ5hQQWWjHthmaSGq7vZkxzQxJKzi/WctF5SIt6PFGgAL+vVJqRpnIOay1REFBay8YwIy3cfhLAuYWETjOs2zrHf//0dR565/v5t7/yK/temSNVLU+qHyhEnSv3kz/19/iNX/0Ijy8Z7l1pEYVBnbo2Dz7t59V5j3eedJ7DspcW5/YqNc2rBM3yWq51mwHO1zmCkjr/cC97Qu4VcZwXUpQH0s8CJchKS5qbee1AaES6DkAhsI79KmzW+31ZmYQKY/fcdLUbzPm6bykF06wWN8ZYXt6c8LktxXvf/zf5+Z/5GeZZI3dXAnSvoKGQko9/8v/wL//FP+f5z3wMO91C+XLf4vYHnq1d+AIha63o5vvVQ4pfgERg5+WThJwXW3Q3K725/bThm9XWvKvzX/YSNPfitIK6mqFzvt4LS3FoTy/nhOAP5LI6P/8sbrbXUlASIFurPPoN7+AHf+iDPPX2t9SVNf3JRzpuWwL0YCVLgO3dIS+8dJHRaHQgU/RmIZvjqpsdcmL4I2nLR3KiX9tJJn+gBpY/cMhc7I9vr2TocSncdZUnQa/b5eseepDlxYVaht+h/OcdAdy7nHP71d3+JFzGmP1Kvnc8iHM3lcz/uJ53u5vruPLHt7vuiqS+lmtIv2bAX4fgdQBfB/B1AP8EX/8f7QLmjSklY9MAAAAASUVORK5CYII=" alt="Removed" style="width:60px;height:60px;object-fit:contain;" /></span>
+            <span class="residue-name" data-i18n="res-removed">Removed</span>
+          </button>
+          <button class="residue-btn" data-residue="incorporated" onclick="selectResidue('incorporated')">
+            <span class="residue-icon"><img src="data:image/png;base64,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" alt="Incorporated" style="width:60px;height:60px;object-fit:contain;" /></span>
+            <span class="residue-name" data-i18n="res-incorporated">Incorporated</span>
+          </button>
+          <button class="residue-btn" data-residue="mulching" onclick="selectResidue('mulching')">
+            <span class="residue-icon"><img src="data:image/png;base64,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" alt="Mulching" style="width:60px;height:60px;object-fit:contain;" /></span>
+            <span class="residue-name" data-i18n="res-mulching">Mulching</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="card-header">
+      <span class="step-pill" id="step2-pill">Step 2</span>
+      <h2 id="step2-title">Target yield (T)</h2>
+    </div>
+    <div class="card-body">
+      <div class="field-row">
+        <div class="field-label">
+          <label for="T" id="t-label">Target yield — quintals / acre</label>
+          <span class="badge" id="t-range-badge">25–35 qtl</span>
+        </div>
+        <input type="number" id="T" placeholder="e.g. 30" min="0" step="0.5" oninput="onInput()" />
+        <div id="range-note" class="range-note"></div>
+        <div class="error-msg" id="t-error"></div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="card-header">
+      <span class="step-pill" id="step3-pill">Step 3</span>
+      <h2 id="step3-title">Soil nutrient status</h2>
+    </div>
+    <div class="card-body">
+      <div class="soil-grid">
+        <div class="field-row">
+          <div class="field-label">
+            <label for="SN" data-i18n="sn-label">Soil Nitrogen (SN)</label>
+          </div>
+          <input type="number" id="SN" min="0" step="0.1" oninput="onSNInput()" />
+        </div>
+        <div class="oc-or-row">
+          <div class="oc-or-line"></div>
+          <span class="oc-or-text" id="oc-or-text">OR</span>
+          <div class="oc-or-line"></div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">
+            <label for="OC" data-i18n="oc-label">Organic Carbon (OC %)</label>
+            <span class="hint" id="oc-hint-text" data-i18n="oc-hint">if Soil N not available</span>
+          </div>
+          <input type="number" id="OC" min="0" max="5" step="0.01" oninput="onOCInput()" />
+          <div class="oc-estimate-note" id="oc-estimate-note" style="display:none;">
+            <div>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span id="oc-estimate-text"></span>
+            </div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">
+            <label for="SP" data-i18n="sp-label">Soil Phosphorus (SP)</label>
+          </div>
+          <input type="number" id="SP" min="0" step="0.1" oninput="onInput()" />
+        </div>
+        <div class="field-row">
+          <div class="field-label">
+            <label for="SK" data-i18n="sk-label">Soil Potassium (SK)</label>
+          </div>
+          <input type="number" id="SK" min="0" step="0.1" oninput="onInput()" />
+        </div>
+      </div>
+        <!-- Previous crop P toggle — rice and maize only -->
+        <div id="prev-p-wrap" style="display:none;margin-top:.75rem;">
+          <div style="background:#fff8e1;border:1.5px solid #f9a825;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:13px;font-weight:600;color:#1a3a2a;margin-bottom:8px;" id="prev-p-label">
+              Did the previous crop receive the recommended P₂O₅ dose?
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button class="prev-p-btn active" id="prev-p-no"  onclick="setPrevP(false)"
+                style="flex:1;padding:8px;border:1.5px solid #ccc;border-radius:8px;background:#f5f5f5;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;">
+                No
+              </button>
+              <button class="prev-p-btn" id="prev-p-yes" onclick="setPrevP(true)"
+                style="flex:1;padding:8px;border:1.5px solid #ccc;border-radius:8px;background:#f5f5f5;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;">
+                Yes — Skip P
+              </button>
+            </div>
+            <div style="font-size:11px;color:#7c5c3a;margin-top:6px;line-height:1.6;" id="prev-p-hint">
+              If yes, P₂O₅ dose will be set to zero for this crop.
+            </div>
+          </div>
+        </div>
+      <div class="error-msg" id="soil-error"></div>
+      <button class="calc-btn" onclick="calculate()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M8 12h8M12 8v8"/></svg>
+        <span id="calc-btn-text">Calculate fertilizer requirement</span>
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div class="results-section" id="results-section">
+      <div class="results-header">
+        <h3 id="results-heading">Fertilizer recommendation</h3>
+        <span class="results-crop-tag" id="results-crop-tag"></span>
+        <span class="oc-result-badge" id="oc-result-badge" style="display:none;" data-i18n="oc-badge">N from OC%</span>
+      </div>
+      <div class="result-cards">
+        <div class="result-card n" id="card-fn">
+          <div class="r-label">FN</div>
+          <div class="r-value" id="r-fn">—</div>
+          <div class="r-unit" data-i18n="unit-n">kg N / acre</div>
+          <div class="r-divider"></div>
+          <div class="r-ha-val" id="r-fn-ha">— <span class="r-ha-unit">kg/ha</span></div>
+          <div class="r-negative" id="fn-neg" style="display:none" data-i18n="high-n">High soil N — review</div>
+        </div>
+        <div class="result-card p" id="card-fp">
+          <div class="r-label">FP₂O₅</div>
+          <div class="r-value" id="r-fp">—</div>
+          <div class="r-unit" data-i18n="unit-p">kg P₂O₅ / acre</div>
+          <div class="r-divider"></div>
+          <div class="r-ha-val" id="r-fp-ha">— <span class="r-ha-unit">kg/ha</span></div>
+          <div class="r-negative" id="fp-neg" style="display:none" data-i18n="high-p">High soil P — review</div>
+        </div>
+        <div class="result-card k" id="card-fk">
+          <div class="r-label">FK₂O</div>
+          <div class="r-value" id="r-fk">—</div>
+          <div class="r-unit" data-i18n="unit-k">kg K₂O / acre</div>
+          <div class="r-divider"></div>
+          <div class="r-ha-val" id="r-fk-ha">— <span class="r-ha-unit">kg/ha</span></div>
+          <div class="r-negative" id="fk-neg" style="display:none" data-i18n="high-k">High soil K — review</div>
+        </div>
+      </div>
+      <div class="t-conv-note" id="t-conv-note" style="display:none;">
+        <span id="t-conv-text"></span>
+      </div>
+
+      <div class="fert-table-wrap">
+        <div class="fert-table-title" id="fert-title">Fertilizer product requirement</div>
+        <div class="scenario-tabs">
+          <button class="scenario-tab active" id="tab-dap" onclick="switchScenario('dap')" data-i18n="tab-dap">Using DAP for phosphorus</button>
+          <button class="scenario-tab" id="tab-ssp" onclick="switchScenario('ssp')" data-i18n="tab-ssp">Using SSP for phosphorus</button>
+        </div>
+
+        <!-- DAP -->
+        <div id="scenario-dap">
+          <table class="fert-table">
+            <thead><tr>
+              <th data-i18n="th-fert">Fertilizer</th>
+              <th data-i18n="th-nutrient">Nutrient supplied</th>
+              <th data-i18n="th-qty">kg / acre</th>
+              <th data-i18n="th-qty-ha">kg / ha</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="fert-bag-cell">
+                    <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>Urea bag</title>
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+                      <line x1="4" y1="30" x2="106" y2="30" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#a5d6a7" stroke-width="0.8"/>
+                      <line x1="4" y1="102" x2="106" y2="102" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#a5d6a7" stroke-width="0.8"/>
+                      <line x1="20" y1="22" x2="20" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#a5d6a7" stroke-width="0.8"/>
+                      <rect x="0" y="68" width="110" height="34" fill="#2e7d32"/>
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#2e7d32" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
+                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">UREA</text>
+                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#a5d6a7">Nitrogen Fertilizer</text>
+                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#2e7d32">45 kg NET</text>
+                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#2e7d32">N: 46%</text>
+                    </svg>
+                  </div>
+                  <span class="fert-source" data-i18n="urea-src-dap">46% N — adjusted after DAP N credit</span>
+                </td>
+                <td data-i18n="nitrogen-n">Nitrogen (N)</td>
+                <td id="t-urea-dap">—</td>
+                <td id="t-urea-dap-ha">—</td>
+              </tr>
+              <tr id="dap-urea-caption-row" style="display:none;">
+                <td colspan="4" style="padding:2px 14px 8px;"><span id="dap-urea-caption" style="font-size:11px;color:#e65100;font-style:italic;display:none;"></span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="fert-bag-cell">
+                    <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>DAP bag</title>
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fff3e0" stroke="#bf360c" stroke-width="1.5"/>
+                      <line x1="4" y1="30" x2="106" y2="30" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#ffcc80" stroke-width="0.8"/>
+                      <line x1="4" y1="102" x2="106" y2="102" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#ffcc80" stroke-width="0.8"/>
+                      <line x1="20" y1="22" x2="20" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#ffcc80" stroke-width="0.8"/>
+                      <rect x="0" y="68" width="110" height="34" fill="#bf360c"/>
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#ffe0b2" stroke="#bf360c" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#bf360c" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#ffe0b2" stroke="#bf360c" stroke-width="1"/>
+                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">DAP</text>
+                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#ffccbc">Di-Ammonium Phosphate</text>
+                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#bf360c">45 kg NET</text>
+                      <text x="55" y="113" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#bf360c">N:18%  P₂O₅:46%</text>
+                    </svg>
+                  </div>
+                  <span class="fert-source" data-i18n="dap-src">Di-Ammonium Phosphate — 18% N, 46% P₂O₅</span>
+                </td>
+                <td data-i18n="phosphorus-p">Phosphorus (P₂O₅) + N credit</td>
+                <td id="t-dap">—</td>
+                <td id="t-dap-ha">—</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="fert-bag-cell">
+                    <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>MOP bag</title>
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fce4ec" stroke="#880e4f" stroke-width="1.5"/>
+                      <line x1="4" y1="30" x2="106" y2="30" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#f48fb1" stroke-width="0.8"/>
+                      <line x1="4" y1="102" x2="106" y2="102" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#f48fb1" stroke-width="0.8"/>
+                      <line x1="20" y1="22" x2="20" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#f48fb1" stroke-width="0.8"/>
+                      <rect x="0" y="68" width="110" height="34" fill="#880e4f"/>
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#880e4f" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
+                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">MOP</text>
+                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#f8bbd0">Muriate of Potash</text>
+                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#880e4f">45 kg NET</text>
+                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#880e4f">K₂O: 60%</text>
+                    </svg>
+                  </div>
+                  <span class="fert-source" data-i18n="mop-src">Muriate of Potash — 60% K₂O</span>
+                </td>
+                <td data-i18n="potassium-k">Potassium (K₂O)</td>
+                <td id="t-mop-dap">—</td>
+                <td id="t-mop-dap-ha">—</td>
+              </tr>
+              <tr id="dap-ssp-comp-row" style="display:none;">
+                <td>
+                  <div class="fert-bag-cell">
+                    <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>SSP bag</title>
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fafafa" stroke="#5d4037" stroke-width="1.5"/>
+                      <line x1="4" y1="30" x2="106" y2="30" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#d7ccc8" stroke-width="0.8"/>
+                      <line x1="4" y1="102" x2="106" y2="102" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#d7ccc8" stroke-width="0.8"/>
+                      <line x1="20" y1="22" x2="20" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#d7ccc8" stroke-width="0.8"/>
+                      <rect x="0" y="68" width="110" height="34" fill="#5d4037"/>
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#5d4037" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
+                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">SSP</text>
+                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#d7ccc8">Single Super Phosphate</text>
+                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#5d4037">45 kg NET</text>
+                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#5d4037">P₂O₅: 16%</text>
+                    </svg>
+                  </div>
+                  <span class="fert-source" id="dap-ssp-comp-label">SSP added to compensate for phosphorus removed from DAP — 16% P₂O₅</span>
+                </td>
+                <td id="dap-ssp-comp-nutrient">Phosphorus (P₂O₅) — DAP compensation</td>
+                <td id="dap-ssp-comp-acre">—</td>
+                <td id="dap-ssp-comp-ha">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="fert-n-credit" id="dap-n-credit"></div>
+          <div class="fert-table-footnote" id="dap-footnote">DAP supplies 18% N alongside P₂O₅. This nitrogen is credited and deducted from the Urea dose. If DAP N exceeds FN requirement, Urea = 0.</div>
+          <div class="small-dap-warning" id="small-dap-warning" style="display:none;"></div>
+          <div class="dap-small-note" id="dap-small-note" style="display:none;"></div>
+        </div>
+
+        <!-- SSP -->
+        <div id="scenario-ssp" style="display:none">
+          <table class="fert-table">
+            <thead><tr>
+              <th data-i18n="th-fert">Fertilizer</th>
+              <th data-i18n="th-nutrient">Nutrient supplied</th>
+              <th data-i18n="th-qty">kg / acre</th>
+              <th data-i18n="th-qty-ha">kg / ha</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="fert-bag-cell">
+                    <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>Urea bag</title>
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+                      <line x1="4" y1="30" x2="106" y2="30" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#a5d6a7" stroke-width="0.8"/>
+                      <line x1="4" y1="102" x2="106" y2="102" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#a5d6a7" stroke-width="0.8"/>
+                      <line x1="20" y1="22" x2="20" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#a5d6a7" stroke-width="0.8"/>
+                      <rect x="0" y="68" width="110" height="34" fill="#2e7d32"/>
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#2e7d32" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
+                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">UREA</text>
+                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#a5d6a7">Nitrogen Fertilizer</text>
+                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#2e7d32">45 kg NET</text>
+                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#2e7d32">N: 46%</text>
+                    </svg>
+                  </div>
+                  <span class="fert-source" data-i18n="urea-src-ssp">46% N — full FN dose (no N credit from SSP)</span>
+                </td>
+                <td data-i18n="nitrogen-n">Nitrogen (N)</td>
+                <td id="t-urea-ssp">—</td>
+                <td id="t-urea-ssp-ha">—</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="fert-bag-cell">
+                    <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>SSP bag</title>
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fafafa" stroke="#5d4037" stroke-width="1.5"/>
+                      <line x1="4" y1="30" x2="106" y2="30" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#d7ccc8" stroke-width="0.8"/>
+                      <line x1="4" y1="102" x2="106" y2="102" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#d7ccc8" stroke-width="0.8"/>
+                      <line x1="20" y1="22" x2="20" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#d7ccc8" stroke-width="0.8"/>
+                      <rect x="0" y="68" width="110" height="34" fill="#5d4037"/>
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#5d4037" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
+                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">SSP</text>
+                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#d7ccc8">Single Super Phosphate</text>
+                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#5d4037">45 kg NET</text>
+                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#5d4037">P₂O₅: 16%</text>
+                    </svg>
+                  </div>
+                  <span class="fert-source" data-i18n="ssp-src">Single Super Phosphate — 16% P₂O₅</span>
+                </td>
+                <td data-i18n="phosphorus-p2">Phosphorus (P₂O₅)</td>
+                <td id="t-ssp">—</td>
+                <td id="t-ssp-ha">—</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="fert-bag-cell">
+                    <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>MOP bag</title>
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fce4ec" stroke="#880e4f" stroke-width="1.5"/>
+                      <line x1="4" y1="30" x2="106" y2="30" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#f48fb1" stroke-width="0.8"/>
+                      <line x1="4" y1="102" x2="106" y2="102" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#f48fb1" stroke-width="0.8"/>
+                      <line x1="20" y1="22" x2="20" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#f48fb1" stroke-width="0.8"/>
+                      <rect x="0" y="68" width="110" height="34" fill="#880e4f"/>
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#880e4f" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
+                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">MOP</text>
+                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#f8bbd0">Muriate of Potash</text>
+                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#880e4f">45 kg NET</text>
+                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#880e4f">K₂O: 60%</text>
+                    </svg>
+                  </div>
+                  <span class="fert-source" data-i18n="mop-src">Muriate of Potash — 60% K₂O</span>
+                </td>
+                <td data-i18n="potassium-k2">Potassium (K₂O)</td>
+                <td id="t-mop-ssp">—</td>
+                <td id="t-mop-ssp-ha">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="fert-table-footnote" id="ssp-footnote">SSP contains no nitrogen, so the full Urea dose is applied. SSP dose = FP₂O₅ ÷ 0.16. Negative FP₂O₅ values are treated as 0.</div>
+        </div>
+      </div>
+
+      <div id="wheat-urea-reduction-note" style="display:none;margin-top:12px;padding:12px 16px;background:#e8f5e9;border:2px solid #2d6a4f;border-radius:10px;font-size:12.5px;font-weight:600;color:#1a3a2a;line-height:1.7;display:none;">
+        <span style="font-size:15px;margin-right:6px;">🌱</span><span id="urea-note-text"></span>
+      </div>
+      <!-- Urea Application Schedule -->
+      <div class="split-schedule" id="split-schedule" style="display:none;">
+        <div class="split-pk-note" id="split-pk-note">Apply full dose of DAP/SSP and MOP at the time of sowing / transplanting.</div>
+        <div class="split-title" id="split-title">Urea Application Schedule</div>
+        <div class="split-rows" id="split-rows"></div>
+      </div>
+
+
+      <!-- PAU General Recommendation Reference Panel -->
+      <div class="pau-panel" id="pau-panel" style="display:none;">
+        <div class="pau-panel-header" onclick="togglePauPanel()">
+          <div class="pau-panel-header-left">
+            <span class="pau-panel-badge">PAU OFFICIAL</span>
+            <span class="pau-panel-title" id="pau-panel-title">PAU General Recommendation (for reference)</span>
+          </div>
+          <svg class="pau-panel-chevron" id="pau-panel-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="pau-panel-body" id="pau-panel-body" style="display:none;">
+          <div class="pau-note" id="pau-note">
+            These are PAU standard doses for medium fertility soils, recommended <em>in the absence of soil test</em>.
+            Your STCR recommendation above is the preferred PAU approach when soil test data is available.
+          </div>
+          <table class="pau-table">
+            <thead>
+              <tr>
+                <th id="pau-th-nutrient">Nutrient</th>
+                <th id="pau-th-stcr">Your STCR Dose</th>
+                <th id="pau-th-pau">PAU General Dose</th>
+                <th id="pau-th-unit">Unit</th>
+              </tr>
+            </thead>
+            <tbody id="pau-table-body">
+              <!-- filled by JS -->
+            </tbody>
+          </table>
+          <div class="pau-compare-note" id="pau-compare-note"></div>
+          <div class="pau-table-note" id="pau-table-note"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="help-footer-wrap">
+  <footer id="footer-el">
+    <div class="footer-line1">
+      Copyright &copy; 2026 &nbsp;&middot;&nbsp;
+      <a href="http://pau.edu/" target="_blank">Punjab Agricultural University, Ludhiana — All rights reserved.</a>
+    </div>
+    <div class="footer-line2" id="footer-line2">
+      Developed by Dr. Jagdeep Singh, Senior Soil Chemist, Department of Soil Science, Punjab Agricultural University, Ludhiana
+    </div>
+  </footer>
+</div>
+
+<script>
+const T18N = {
+  en: {
+    lang:'en', bodyClass:'',
+    title:'PAU Khad Guide — Fertilizer Requirement Calculator',
+    'logo-text':'PAU Khad Guide', 'logo-sub':'Right Fertilizer. Right Time. Right Dose.',
+    'hero-eyebrow':'Soil-Test Based Recommendation',
+    'hero-title':'Calculate your <em>precise</em> fertilizer requirement',
+    'hero-desc':'Enter your target yield and soil nutrient levels to get crop-specific N, P₂O₅ and K₂O recommendations in kg/acre.',
+    'step1-pill':'Step 1','step1-title':'Select crop',
+    'step2-pill':'Step 2','step2-title':'Target yield (T)',
+    'step3-pill':'Step 3','step3-title':'Soil nutrient status',
+    'crop-rice':'Rice','crop-rice-desc':'Target yield range: 25–35 q/acre',  'crop-rice-note':'* excluding PR 132',
+    'crop-maize':'Maize','crop-maize-desc':'Target yield range: 25–30 q/acre',
+    'crop-wheat':'Wheat','crop-wheat-desc':'Target yield range: 20–25 q/acre',
+    'residue-label':'Rice residue management practice',
+    'res-removed':'Removed','res-incorporated':'Incorporated','res-mulching':'Mulching',
+    't-label':'Target yield — quintals / acre',
+    'sn-ph':'kg/acre','sp-ph':'kg/acre','sk-ph':'kg/acre','tin-ph':'e.g. 30',
+    'sn-label':'Soil Nitrogen (SN)','sp-label':'Soil Phosphorus (SP)','sk-label':'Soil Potassium (SK)',
+    'oc-label':'Organic Carbon (OC %)','oc-hint':'if Soil N not available',
+    'oc-badge':'N estimated from OC%',
+    'oc-estimate-msg':(oc,sn_ha,sn_ac)=>`Soil N estimated from OC: ${oc}% → ${sn_ha} kg/ha (${sn_ac} kg/acre) using: SN = 94 + 68 × OC%`,
+    'oc-warning':'For best results, use directly measured Soil N values.',
+    'err-n-missing':'Enter either Soil Nitrogen (SN) or Organic Carbon (OC%) — at least one is required.',
+    'err-oc-range':'OC% must be between 0 and 5.',
+    'calc-btn-text':'Calculate fertilizer requirement',
+    'results-heading':'Fertilizer recommendation',
+    'unit-n':'kg N / acre','unit-p':'kg P₂O₅ / acre','unit-k':'kg K₂O / acre',
+    'high-n':'High soil N — review','high-p':'High soil P — review','high-k':'High soil K — review',
+    'results-footnote':'Results computed using soil-test based fertilizer adjustment equations.',
+    't-conv-note':(T_acre,T_ha,sn,sp,sk)=>`T: ${T_acre} q/acre → ${T_ha} q/ha · SN: ${sn} kg/ha · SP: ${sp} kg/ha · SK: ${sk} kg/ha. Fertilizer outputs ÷ 2.471 → kg/acre.`,
+    'fert-title':'Fertilizer product requirement',
+    'tab-dap':'Using DAP for phosphorus','tab-ssp':'Using SSP for phosphorus',
+    'th-fert':'Fertilizer','th-nutrient':'Nutrient supplied','th-qty':'kg / acre','th-qty-ha':'kg / ha',
+    'urea':'Urea','urea-src-dap':'46% N — adjusted after DAP N credit',
+    'urea-src-ssp':'46% N — full FN dose (no N credit from SSP)',
+    'dap-src':'Di-Ammonium Phosphate — 18% N, 46% P₂O₅',
+    'mop':'MOP','mop-src':'Muriate of Potash — 60% K₂O',
+    'ssp-src':'Single Super Phosphate — 16% P₂O₅',
+    'nitrogen-n':'Nitrogen (N)','phosphorus-p':'Phosphorus (P₂O₅) + N credit',
+    'phosphorus-p2':'Phosphorus (P₂O₅)','potassium-k':'Potassium (K₂O)','potassium-k2':'Potassium (K₂O)',
+    'dap-footnote':'DAP supplies 18% N alongside P₂O₅. This nitrogen is credited and deducted from the Urea dose. If DAP N exceeds FN requirement, Urea = 0.',
+    'ssp-footnote':'SSP contains no nitrogen, so the full Urea dose is applied. SSP dose = FP₂O₅ ÷ 0.16.',
+    'err-t':'Please enter a target yield.','err-soil':'Please fill in all soil nutrient values (SN, SP, SK).',
+    'err-t-zero':'Target yield must be greater than 0.','err-soil-neg':'Soil values cannot be negative.',
+    'err-range':(min,max,crop)=>`Note: T is outside the recommended ${min}–${max} range for ${crop}.`,
+    'crop-labels':{rice:'Rice',maize:'Maize',wheat:'Wheat'},
+    'residue-labels':{removed:'Removed',incorporated:'Incorporated',mulching:'Mulching'},
+    'crop-tag-wheat':(r)=>`Wheat — Residue ${r}`,
+    'hints':{rice:'Recommended range for rice is 25–35 quintals/acre.',maize:'Recommended range for maize is 25–30 quintals/acre.',wheat:'Recommended range for wheat is 20–25 quintals/acre.'},
+    'badge':{rice:'25–35 qtl',maize:'25–30 qtl',wheat:'20–25 qtl'},
+    'dap-credit':(n_acre,n_ha,full)=>`DAP supplies ${n_acre} kg N/acre (${n_ha} kg N/ha) — deducted from Urea dose.`+(full?' DAP alone meets full N requirement; no Urea needed.':''),
+  },
+  pa: {
+    lang:'pa', bodyClass:'pa',
+    title:'PAU Khad Guide — ਖਾਦ ਲੋੜ ਕੈਲਕੁਲੇਟਰ',
+    'logo-text':'PAU Khad Guide','logo-sub':'ਸਹੀ ਖਾਦ · ਸਹੀ ਸਮੇਂ · ਸਹੀ ਮਾਤਰਾ',
+    'hero-eyebrow':'ਮਿੱਟੀ ਜਾਂਚ ਆਧਾਰਿਤ ਸਿਫ਼ਾਰਸ਼',
+    'hero-title':'ਆਪਣੀ ਫ਼ਸਲ ਲਈ <em>ਸਹੀ ਖਾਦ</em> ਦੀ ਲੋੜ ਜਾਣੋ',
+    'hero-desc':'ਟੀਚਾ ਝਾੜ ਅਤੇ ਮਿੱਟੀ ਦੇ ਪੌਸ਼ਟਿਕ ਤੱਤਾਂ ਦਾ ਪੱਧਰ ਦਰਜ ਕਰੋ ਅਤੇ ਫ਼ਸਲ ਅਨੁਸਾਰ N, P₂O₅ ਅਤੇ K₂O ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਿੱਲੋ/ਏਕੜ ਵਿੱਚ ਪ੍ਰਾਪਤ ਕਰੋ।',
+    'step1-pill':'ਕਦਮ ੧','step1-title':'ਫ਼ਸਲ ਚੁਣੋ',
+    'step2-pill':'ਕਦਮ ੨','step2-title':'ਟੀਚਾ ਝਾੜ (T)',
+    'step3-pill':'ਕਦਮ ੩','step3-title':'ਮਿੱਟੀ ਦੇ ਪੌਸ਼ਟਿਕ ਤੱਤਾਂ ਦਾ ਪੱਧਰ',
+    'crop-rice':'ਝੋਨਾ','crop-rice-desc':'ਟੀਚਾ ਝਾੜ ਸੀਮਾ: ੨੫–੩੫ ਕੁਇੰਟਲ/ਏਕੜ','crop-rice-note':'* PR 132 ਛੱਡ ਕੇ',
+    'crop-maize':'ਮੱਕੀ','crop-maize-desc':'ਟੀਚਾ ਝਾੜ ਸੀਮਾ: ੨੫–੩੦ ਕੁਇੰਟਲ/ਏਕੜ',
+    'crop-wheat':'ਕਣਕ','crop-wheat-desc':'ਟੀਚਾ ਝਾੜ ਸੀਮਾ: ੨੦–੨੫ ਕੁਇੰਟਲ/ਏਕੜ',
+    'residue-label':'ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਪ੍ਰਬੰਧਨ ਤਰੀਕਾ',
+    'res-removed':'ਹਟਾਈ ਗਈ','res-incorporated':'ਵਾਹੀ ਗਈ','res-mulching':'ਮਲਚਿੰਗ',
+    't-label':'ਟੀਚਾ ਝਾੜ — ਕੁਇੰਟਲ / ਏਕੜ',
+    'sn-ph':'ਕਿੱਲੋ/ਏਕੜ','sp-ph':'ਕਿੱਲੋ/ਏਕੜ','sk-ph':'ਕਿੱਲੋ/ਏਕੜ','tin-ph':'ਜਿਵੇਂ 30',
+    'sn-label':'ਮਿੱਟੀ ਨਾਈਟ੍ਰੋਜਨ (SN)','sp-label':'ਮਿੱਟੀ ਫਾਸਫੋਰਸ (SP)','sk-label':'ਮਿੱਟੀ ਪੋਟਾਸ਼ੀਅਮ (SK)',
+    'oc-label':'ਜੈਵਿਕ ਕਾਰਬਨ (OC %)','oc-hint':'ਜੇ SN ਉਪਲਬਧ ਨਹੀਂ',
+    'oc-badge':'N — OC% ਤੋਂ ਅੰਦਾਜ਼ਾ',
+    'oc-estimate-msg':(oc,sn_ha,sn_ac)=>`SN ਦਾ ਅੰਦਾਜ਼ਾ OC ਤੋਂ: ${oc}% → ${sn_ha} kg/ha (${sn_ac} kg/ਏਕੜ)`,
+    'oc-warning':'ਵਧੀਆ ਨਤੀਜਿਆਂ ਲਈ ਸਿੱਧਾ ਮਿੱਟੀ N ਮੁੱਲ ਵਰਤੋ।',
+    'err-n-missing':'SN ਜਾਂ OC% ਵਿੱਚੋਂ ਕੋਈ ਇੱਕ ਦਰਜ ਕਰੋ।',
+    'err-oc-range':'OC% ਦਾ ਮੁੱਲ 0 ਅਤੇ 5 ਦੇ ਵਿਚਕਾਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।',
+    'calc-btn-text':'ਖਾਦ ਦੀ ਲੋੜ ਹਿਸਾਬ ਕਰੋ',
+    'results-heading':'ਖਾਦ ਸਿਫ਼ਾਰਸ਼',
+    'unit-n':'ਕਿੱਲੋ N / ਏਕੜ','unit-p':'ਕਿੱਲੋ P₂O₅ / ਏਕੜ','unit-k':'ਕਿੱਲੋ K₂O / ਏਕੜ',
+    'high-n':'ਮਿੱਟੀ N ਵੱਧ','high-p':'ਮਿੱਟੀ P ਵੱਧ','high-k':'ਮਿੱਟੀ K ਵੱਧ',
+    'results-footnote':'ਨਤੀਜੇ ਮਿੱਟੀ ਜਾਂਚ ਆਧਾਰਿਤ ਖਾਦ ਸਮੀਕਰਨਾਂ ਅਨੁਸਾਰ ਹਨ।',
+    't-conv-note':(T_acre,T_ha,sn,sp,sk)=>`T: ${T_acre} ਕੁਇੰਟਲ/ਏਕੜ → ${T_ha} q/ha · SN: ${sn} kg/ha · SP: ${sp} kg/ha · SK: ${sk} kg/ha।`,
+    'fert-title':'ਖਾਦ ਉਤਪਾਦ ਦੀ ਲੋੜ',
+    'tab-dap':'DAP ਨਾਲ ਫਾਸਫੋਰਸ','tab-ssp':'SSP ਨਾਲ ਫਾਸਫੋਰਸ',
+    'th-fert':'ਖਾਦ','th-nutrient':'ਪੌਸ਼ਟਿਕ ਤੱਤ','th-qty':'ਕਿੱਲੋ / ਏਕੜ','th-qty-ha':'ਕਿੱਲੋ / ਹੈਕਟੇਅਰ',
+    'urea':'ਯੂਰੀਆ','urea-src-dap':'46% N — DAP ਦੇ N ਕ੍ਰੈਡਿਟ ਤੋਂ ਬਾਅਦ',
+    'urea-src-ssp':'46% N — ਪੂਰੀ FN ਮਾਤਰਾ',
+    'dap-src':'ਡਾਈ-ਅਮੋਨੀਅਮ ਫਾਸਫੇਟ — 18% N, 46% P₂O₅',
+    'mop':'MOP','mop-src':'ਮਿਊਰੇਟ ਆਫ਼ ਪੋਟਾਸ਼ — 60% K₂O',
+    'ssp-src':'ਸਿੰਗਲ ਸੁਪਰ ਫਾਸਫੇਟ — 16% P₂O₅',
+    'nitrogen-n':'ਨਾਈਟ੍ਰੋਜਨ (N)','phosphorus-p':'ਫਾਸਫੋਰਸ (P₂O₅) + N ਕ੍ਰੈਡਿਟ',
+    'phosphorus-p2':'ਫਾਸਫੋਰਸ (P₂O₅)','potassium-k':'ਪੋਟਾਸ਼ੀਅਮ (K₂O)','potassium-k2':'ਪੋਟਾਸ਼ੀਅਮ (K₂O)',
+    'dap-footnote':'DAP ਵਿੱਚ 18% N ਹੁੰਦਾ ਹੈ ਜੋ ਯੂਰੀਆ ਵਿੱਚੋਂ ਘਟਾਇਆ ਜਾਂਦਾ ਹੈ।',
+    'ssp-footnote':'SSP ਵਿੱਚ N ਨਹੀਂ ਹੁੰਦਾ, ਯੂਰੀਆ ਦੀ ਪੂਰੀ ਮਾਤਰਾ ਪਾਓ।',
+    'err-t':'ਕਿਰਪਾ ਕਰਕੇ ਟੀਚਾ ਝਾੜ ਦਰਜ ਕਰੋ।','err-soil':'ਸਾਰੇ ਮਿੱਟੀ ਮੁੱਲ (SN, SP, SK) ਦਰਜ ਕਰੋ।',
+    'err-t-zero':'ਟੀਚਾ ਝਾੜ ਜ਼ੀਰੋ ਤੋਂ ਵੱਧ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।','err-soil-neg':'ਮਿੱਟੀ ਦੇ ਮੁੱਲ ਨਕਾਰਾਤਮਕ ਨਹੀਂ ਹੋ ਸਕਦੇ।',
+    'err-range':(min,max,crop)=>`ਨੋਟ: T ਮੁੱਲ ${min}–${max} ਦੀ ਸੀਮਾ ਤੋਂ ਬਾਹਰ ਹੈ।`,
+    'crop-labels':{rice:'ਝੋਨਾ',maize:'ਮੱਕੀ',wheat:'ਕਣਕ'},
+    'residue-labels':{removed:'ਹਟਾਈ ਗਈ',incorporated:'ਵਾਹੀ ਗਈ',mulching:'ਮਲਚਿੰਗ'},
+    'crop-tag-wheat':(r)=>`ਕਣਕ — ਰਹਿੰਦ-ਖੂੰਹਦ ${r}`,
+    'hints':{rice:'ਝੋਨੇ ਲਈ ਸਿਫ਼ਾਰਸ਼ੀ ਝਾੜ: ੨੫–੩੫ ਕੁਇੰਟਲ/ਏਕੜ।',maize:'ਮੱਕੀ ਲਈ ਸਿਫ਼ਾਰਸ਼ੀ ਝਾੜ: ੨੫–੩੦ ਕੁਇੰਟਲ/ਏਕੜ।',wheat:'ਕਣਕ ਲਈ ਸਿਫ਼ਾਰਸ਼ੀ ਝਾੜ: ੨੦–੨੫ ਕੁਇੰਟਲ/ਏਕੜ।'},
+    'badge':{rice:'੨੫–੩੫ ਕੁਇੰਟਲ',maize:'੨੫–੩੦ ਕੁਇੰਟਲ',wheat:'੨੦–੨੫ ਕੁਇੰਟਲ'},
+    'dap-credit':(n_acre,n_ha,full)=>`DAP ਤੋਂ ${n_acre} ਕਿੱਲੋ N/ਏਕੜ (${n_ha} kg N/ha) ਮਿਲਦਾ ਹੈ।`+(full?' ਯੂਰੀਆ ਦੀ ਲੋੜ ਨਹੀਂ।':''),
+  }
+};
+
+const cropData = {
+  // Rice:  aT_N recal=2.517 (anchor T=30,PAU N=42); aT_P=0.467; aT_K=0.487; b unchanged
+  rice:  {FN:[2.517,-0.630], FP:[0.467,-0.287], FK:[0.487,-0.065]},
+  // Maize: aT_N recal=5.537 (anchor T=25,PAU N=50); P via PAU Table2; K=STCR original
+  maize: {FN:[5.5831,-1.663], FP:[0.995,-0.571], FK:[1.563,-0.506]}
+};
+const wheatVariants = {
+  // Wheat N recalibrated; P via PAU Table2 ONLY (FP coefficients kept for reference only);
+  // K = STCR original; N targets: Removed=50, Mulching=40.8, Incorp=40.8 kg N/acre at T=22
+  removed:      {FN:[4.9389,-1.364], FP:[1.714,-1.157], FK:[1.077,-0.186]},
+  mulching:     {FN:[4.1374,-0.992], FP:[1.714,-1.515], FK:[0.853,-0.246]},
+  incorporated: {FN:[5.1306,-1.453], FP:[1.84,-2.06],   FK:[0.603,-0.167]}
+};
+const ranges = {rice:{min:25,max:35},maize:{min:25,max:30},wheat:{min:20,max:25}};
+
+let activeLang='en', activeCrop='rice', activeResidue='removed', prevCropP=false;
+let lastFN=null, lastFP=null, lastFK=null;
+let lastDAP=null, lastDAP_ha=null, lastIsSmallDAP=false;
+let lastUd=null, lastUdha=null, lastUs=null, lastUsha=null;
+
+function t(key){return T18N[activeLang][key]||T18N['en'][key]||key;}
+
+function setLang(lang){
+  activeLang=lang;
+  document.getElementById('btn-en').classList.toggle('active',lang==='en');
+  document.getElementById('btn-pa').classList.toggle('active',lang==='pa');
+  document.body.className=T18N[lang].bodyClass;
+  document.documentElement.lang=lang;
+  document.title=t('title');
+  ['hero-title'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=t(id);});
+  ['logo-text','logo-sub','hero-eyebrow','hero-desc','step1-pill','step1-title','step2-pill','step2-title','step3-pill','step3-title','residue-label','t-label','calc-btn-text','results-heading','fert-title','dap-footnote','ssp-footnote','results-footnote','oc-badge'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(id);});
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.getAttribute('data-i18n'));if(v)el.textContent=v;});
+  document.getElementById('T').placeholder=t('tin-ph');
+  document.getElementById('SN').placeholder=t('sn-ph');
+  document.getElementById('SP').placeholder=t('sp-ph');
+  document.getElementById('SK').placeholder=t('sk-ph');
+  selectCrop(activeCrop,true);
+  if(lastFN!==null)refreshResultLabels();
+  renderHelpContent();
+  if(lastFN!==null && lastUd!==null){
+    const s=document.getElementById('scenario-dap').style.display!=='none'?'dap':'ssp';
+    const ua    = s==='dap' ? lastUd   : lastUs;
+    const uh    = s==='dap' ? lastUdha : lastUsha;
+    const dap   = s==='dap' ? lastDAP  : 0;
+    const useSSP= s==='ssp' || (s==='dap' && lastIsSmallDAP);
+    renderSplitSchedule(ua, uh, activeCrop, dap, 0, useSSP);
+  }
+  const l2=document.getElementById('footer-line2');
+  if(l2)l2.textContent=lang==='pa'?'ਡਾ. ਜਗਦੀਪ ਸਿੰਘ ਦੁਆਰਾ ਵਿਕਸਿਤ, ਸੀਨੀਅਰ ਸੁਆਇਲ ਕੈਮਿਸਟ, ਭੂਮੀ ਵਿਗਿਆਨ ਵਿਭਾਗ, PAU, ਲੁਧਿਆਣਾ':'Developed by Dr. Jagdeep Singh, Senior Soil Chemist, Department of Soil Science, Punjab Agricultural University, Ludhiana';
+}
+
+function refreshResultLabels(){
+  const rl=t('residue-labels'),cl=t('crop-labels');
+  document.getElementById('results-crop-tag').textContent=activeCrop==='wheat'?t('crop-tag-wheat')(rl[activeResidue]):cl[activeCrop];
+  const ce=document.getElementById('dap-n-credit');
+  if(ce.style.display!=='none'&&lastFN!==null){
+    const FPe=Math.max(0,lastFP),DAP=FPe/0.46,N=DAP*0.18,FNe=Math.max(0,lastFN);
+    ce.textContent=t('dap-credit')(Math.round(N),Math.round(N*2.471),N>=FNe);
+  }
+}
+
+function selectCrop(crop,silent){
+  activeCrop=crop;
+  if(!silent){document.querySelectorAll('.crop-btn').forEach(b=>b.classList.remove('active'));document.querySelector(`[data-crop="${crop}"]`).classList.add('active');}
+  document.getElementById('wheat-residue-wrap').style.display=crop==='wheat'?'block':'none';
+  // Show prev-P toggle for rice and maize only
+  const ppWrap=document.getElementById('prev-p-wrap');
+  if(ppWrap) ppWrap.style.display=(crop==='rice'||crop==='maize')?'block':'none';
+  // Reset to No when crop changes
+  prevCropP=false;
+  document.getElementById('prev-p-no').classList.add('active');
+  document.getElementById('prev-p-yes').classList.remove('active');
+  document.getElementById('t-range-badge').textContent=t('badge')[crop];
+  const n=document.getElementById('range-note');n.style.display='block';n.textContent=t('hints')[crop];
+  if(!silent)clearResults();
+}
+function selectResidue(r){activeResidue=r;document.querySelectorAll('.residue-btn').forEach(b=>b.classList.remove('active'));document.querySelector(`[data-residue="${r}"]`).classList.add('active');clearResults();}
+function onInput(){clearResults();}
+function onSNInput(){const sn=document.getElementById('SN'),oc=document.getElementById('OC');if(sn.value!==''){oc.value='';oc.classList.add('input-muted');document.getElementById('oc-estimate-note').style.display='none';}else{oc.classList.remove('input-muted');}clearResults();}
+function onOCInput(){const oc=document.getElementById('OC'),sn=document.getElementById('SN');if(oc.value!==''){sn.value='';sn.classList.add('input-muted');}else{sn.classList.remove('input-muted');}clearResults();}
+function clearResults(){
+  document.getElementById('results-section').style.display='none';
+  document.getElementById('t-error').textContent='';document.getElementById('soil-error').textContent='';
+  ['fn','fp','fk'].forEach(id=>{document.getElementById('card-'+id)?.classList.remove('animate');const h=document.getElementById('r-'+id+'-ha');if(h)h.innerHTML='— <span class="r-ha-unit">kg/ha</span>';});
+  const tn=document.getElementById('t-conv-note');if(tn)tn.style.display='none';
+  const ob=document.getElementById('oc-result-badge');if(ob)ob.style.display='none';
+  const sc=document.getElementById('split-schedule');if(sc)sc.style.display='none';
+  const pp=document.getElementById('pau-panel');if(pp)pp.style.display='none';
+  const un=document.getElementById('wheat-urea-reduction-note');if(un)un.style.display='none';
+  lastFN=lastFP=lastFK=null;
+  lastDAP=lastDAP_ha=lastUd=lastUdha=lastUs=lastUsha=null; lastIsSmallDAP=false;
+}
+function v(id){return parseFloat(document.getElementById(id).value);}
+function setResult(id,val){document.getElementById('r-'+id).textContent=Math.round(val);const neg=document.getElementById(id+'-neg');if(neg)neg.style.display=val<0?'block':'none';}
+
+function calculate(){
+  document.getElementById('t-error').textContent='';document.getElementById('soil-error').textContent='';
+  const T=v('T'),SN_raw=v('SN'),OC_raw=v('OC'),SP_acre=v('SP'),SK_acre=v('SK');
+  if(isNaN(T)){document.getElementById('t-error').textContent=t('err-t');return;}
+  if(T<=0){document.getElementById('t-error').textContent=t('err-t-zero');return;}
+  if(isNaN(SN_raw)&&isNaN(OC_raw)){document.getElementById('soil-error').textContent=t('err-n-missing');return;}
+  if(isNaN(SP_acre)||isNaN(SK_acre)){document.getElementById('soil-error').textContent=t('err-soil');return;}
+  if((!isNaN(SN_raw)&&SN_raw<0)||SP_acre<0||SK_acre<0){document.getElementById('soil-error').textContent=t('err-soil-neg');return;}
+  if(!isNaN(OC_raw)&&(OC_raw<0||OC_raw>5)){document.getElementById('soil-error').textContent=t('err-oc-range');return;}
+  let SN_acre,ocUsed=false;
+  if(!isNaN(SN_raw)){SN_acre=SN_raw;ocUsed=false;document.getElementById('oc-estimate-note').style.display='none';}
+  else{SN_acre=(94+68*OC_raw)/2.471;ocUsed=true;document.getElementById('oc-estimate-note').style.display='none';}
+  const r=ranges[activeCrop];
+  if(T<r.min||T>r.max)document.getElementById('t-error').textContent=t('err-range')(r.min,r.max,activeCrop);
+  const A=2.471,T_ha=T*A,SN=SN_acre*A,SP=SP_acre*A,SK=SK_acre*A;
+  const c=activeCrop==='wheat'?wheatVariants[activeResidue]:cropData[activeCrop];
+
+  // ── FN: STCR recalibrated equation ───────────────────────────────
+  const FN_ha=c.FN[0]*T_ha+c.FN[1]*SN;
+  const FN=FN_ha/A;
+
+  // ── FK: PAU binary rule for ALL crops ─────────────────────────────
+  // Apply K dose if soil K < 55 kg/acre (deficient); skip if >= 55
+  const K_DOSE = {rice:12, maize:12, wheat:12}[activeCrop];
+  const FK     = SK_acre < 55 ? K_DOSE : 0;
+  const FK_ha  = FK * A;
+
+  // ── FP: PAU Table 2 for wheat & maize; STCR for rice ─────────────
+  // PAU Table 2 multipliers (rows=soil P cat, cols=OC cat)
+  const _t2={
+    low:   {low:1.25,medium:1.00,high:0.75},
+    medium:{low:1.00,medium:0.75,high:0.50},
+    high:  {low:0.75,medium:0.50,high:0.00},
+    vhigh: {low:0.00,medium:0.00,high:0.00},
+  };
+  const _pCat=SP_acre<5?'low':SP_acre<9?'medium':SP_acre<=20?'high':'vhigh';
+  const _OC=!isNaN(OC_raw)?OC_raw:null;
+  const _ocCat=_OC!==null?(_OC<0.4?'low':_OC<=0.6?'medium':'high'):null;
+
+  // Wheat N reduction: mulching & incorporated get 20 kg/acre less Urea = 9.2 kg N less
+  const _wheatUreaRed = (activeCrop==='wheat' && (activeResidue==='mulching'||activeResidue==='incorporated')) ? 20 : 0;
+
+  let FP, FP_ha, _t2Label='', _t2Applied=false, _t2Mult=1.0;
+
+  // ── P recommendation ─────────────────────────────────────────────
+  // Rice:  PAU binary rule — apply 12 kg only if SP<5 kg/acre (low P); skip otherwise
+  // Maize: PAU Table 2 on base 24 kg/acre (OC × soil P category)
+  // Wheat: PAU Table 2 on base 25 kg/acre (OC × soil P category)
+  const _adjLabel={
+    low:   {low:'+25%',medium:'standard',high:'-25%'},
+    medium:{low:'standard',medium:'-25%',high:'-50%'},
+    high:  {low:'-25%',medium:'-50%',high:'Nil'},
+    vhigh: {low:'Nil',medium:'Nil',high:'Nil'}
+  };
+  const _baseP={rice:12,maize:24,wheat:25}[activeCrop];
+
+  if(activeCrop==='rice'){
+    // ── Rice: simple PAU binary rule ─────────────────────────────
+    if(prevCropP){
+      FP=0; FP_ha=0;
+      _t2Label='Skipped — previous crop received recommended P dose';
+      _t2Applied=true;
+    } else if(SP_acre<5){
+      FP=12; FP_ha=FP*A;
+      _t2Label='Low P soil — full dose applied';
+      _t2Applied=false;
+    } else {
+      FP=0; FP_ha=0;
+      _t2Label='Soil P ≥ 5 kg/acre — P not recommended for rice';
+      _t2Applied=true;
+    }
+  } else if(activeCrop==='maize'||activeCrop==='wheat'){
+    // ── Maize & Wheat: PAU Table 2 ───────────────────────────────
+    if(prevCropP&&activeCrop==='maize'){
+      FP=0; FP_ha=0;
+      _t2Label='Skipped — previous crop received recommended P dose';
+      _t2Applied=true;
+    } else if(_ocCat!==null){
+      _t2Mult=_t2[_pCat][_ocCat];
+      FP=Math.ceil(_baseP*_t2Mult);
+      FP_ha=FP*A;
+      _t2Applied=true;
+      _t2Label=_adjLabel[_pCat][_ocCat];
+    } else {
+      // OC not entered — apply standard base dose
+      FP=_baseP;
+      FP_ha=FP*A;
+      _t2Label='OC not entered — standard dose applied';
+    }
+  }
+
+  // Table 2 variables now set inside FP calculation block above
+  const OC_val=_OC; const pCat=_pCat; const ocCat=_ocCat;
+  const table2Applied=_t2Applied; const table2Label=_t2Label; const table2Multiplier=_t2Mult;
+  const FP_adj=FP; // FP is already the final adjusted value
+
+  // ── PAU General Reference doses (kg/acre) ─────────────────────────
+  const PAU_general = {
+    rice:  { N:42, P:FP, K:12, Kond:'if soil K < 55 kg/acre', Pond:'PAU Table 2 adjusted' },
+    maize: { N:50, P:FP, K:12, Kond:'if soil K < 55 kg/acre', Pond:'PAU Table 2 adjusted' },
+    wheat: { N:50, P:FP, K:12, Kond:'if soil K < 55 kg/acre', Pond:'PAU Table 2 adjusted' },
+  };
+  const pau = PAU_general[activeCrop];
+  // K PAU rule: apply if <55, skip if ≥55
+  const pau_K = SK_acre < 55 ? pau.K : 0;
+  const pau_P = activeCrop==='rice' && SP_acre>5 ? 0 : pau.P; // rice skips P if not low
+
+  lastFN=FN;lastFP=FP;lastFK=FK;
+  setResult('fn',Math.max(0,FN));setResult('fp',Math.max(0,FP));setResult('fk',Math.max(0,FK));
+  document.getElementById('r-fn-ha').innerHTML=`${Math.round(FN_ha)} <span class="r-ha-unit">kg/ha</span>`;
+  document.getElementById('r-fp-ha').innerHTML=`${Math.round(Math.max(0,FP_ha))} <span class="r-ha-unit">kg/ha</span>`;
+  document.getElementById('r-fk-ha').innerHTML=`${Math.round(Math.max(0,FK_ha))} <span class="r-ha-unit">kg/ha</span>`;
+  document.getElementById('oc-result-badge').style.display=ocUsed?'inline-flex':'none';
+  const tn=document.getElementById('t-conv-note'),tx=document.getElementById('t-conv-text');
+  tn.style.display='none'; // conversion note hidden
+  const rl=t('residue-labels'),cl=t('crop-labels');
+  document.getElementById('results-crop-tag').textContent=activeCrop==='wheat'?t('crop-tag-wheat')(rl[activeResidue]):cl[activeCrop];
+  const FNe=Math.max(0,FN),FPe=Math.max(0,FP),FKe=Math.max(0,FK);
+  // Urea reduction note for mulching/incorporated wheat
+  const _urNoteEl=document.getElementById('wheat-urea-reduction-note');
+  const _urNoteText=document.getElementById('urea-note-text');
+  if(_urNoteEl){
+    if(_wheatUreaRed>0){
+      _urNoteEl.style.display='block';
+      if(_urNoteText) _urNoteText.textContent=activeLang==='pa'
+        ?'ਯੂਰੀਆ ਖੁਰਾਕ 20 kg/ਏਕੜ ਘਟਾਈ ਗਈ — ਉਸੇ ਖੇਤ ਵਿੱਚ 3 ਜਾਂ ਵੱਧ ਸਾਲ ਲਗਾਤਾਰ ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਵਾਹੁਣ/ਮਲਚਿੰਗ ਦਾ ਲਾਭ।'
+        :'Urea dose reduced by 20 kg/acre — benefit of continuous rice residue incorporation/mulching in the same field for 3 or more years.';
+    } else {
+      _urNoteEl.style.display='none';
+    }
+  }
+  const FNeha=Math.max(0,FN_ha),FPeha=Math.max(0,FP_ha),FKeha=Math.max(0,FK_ha);
+  const MOP=FKe/0.60,MOPha=FKeha/0.60;
+  const DAP=FPe/0.46,DAPha=FPeha/0.46,Ndap=DAP*0.18,Ndapha=DAPha*0.18;
+
+  // ── Wheat small-DAP check (DAP < 5 kg/acre → treat like SSP) ───
+  const isWheatSmallDAP = (activeCrop==='wheat' && DAP < 5 && DAP > 0);
+  const warnEl = document.getElementById('small-dap-warning');
+
+  let Ud, Udha, displayDAP, displayDAPha;
+
+  if(isWheatSmallDAP){
+    // DAP N folds into total Urea pool (same as SSP scenario)
+    Ud         = FNe / 0.46;        // full FN → Urea, no DAP credit deducted
+    Udha       = FNeha / 0.46;
+    displayDAP    = DAP;            // keep original calculated DAP value displayed
+    displayDAPha  = DAPha;
+    // Show note on DAP row (not amber box)
+    warnEl.style.display = 'none';  // amber warning box removed
+  } else {
+    Ud         = Math.max(0,FNe-Ndap)/0.46;
+    Udha       = Math.max(0,FNeha-Ndapha)/0.46;
+    displayDAP    = DAP;
+    displayDAPha  = DAPha;
+    warnEl.style.display = 'none';
+  }
+
+  document.getElementById('t-urea-dap').textContent    = Math.round(Ud);
+  document.getElementById('t-urea-dap-ha').textContent = Math.round(Udha);
+
+  // Caption on Urea row for small-DAP
+  const ureaCaptionEl = document.getElementById('dap-urea-caption');
+  if(ureaCaptionEl){
+    if(isWheatSmallDAP){
+      ureaCaptionEl.style.display = 'block';
+      ureaCaptionEl.textContent = activeLang==='pa'
+        ? '(DAP ਦਾ N ਵੀ ਸ਼ਾਮਲ — DAP ਅਤੇ P ਦੋਵੇਂ ਯੂਰੀਆ ਵਿੱਚ ਜੋੜੇ ਗਏ)'
+        : '(DAP N included — DAP contributes towards total Urea + P)';
+    } else {
+      ureaCaptionEl.style.display = 'none';
+    }
+  }
+
+  document.getElementById('t-dap').textContent    = Math.round(displayDAP);
+  document.getElementById('t-dap-ha').textContent = Math.round(displayDAPha);
+  document.getElementById('t-mop-dap').textContent    = Math.round(MOP);
+  document.getElementById('t-mop-dap-ha').textContent = Math.round(MOPha);
+
+  // DAP small-dose note on DAP row (replaces amber warning box)
+  const dapSmallNoteEl = document.getElementById('dap-small-note');
+  if(dapSmallNoteEl){
+    dapSmallNoteEl.style.display = (isWheatSmallDAP) ? 'block' : 'none';
+    if(isWheatSmallDAP){
+      dapSmallNoteEl.textContent = activeLang==='pa'
+        ? 'DAP ਦੀ ਮਾਤਰਾ ਬਹੁਤ ਘੱਟ — P ਸਰੋਤ ਵਜੋਂ SSP ਵਰਤੋ। DAP ਦਾ N ਯੂਰੀਆ ਵਿੱਚ ਮੁਆਵਜ਼ਾ ਦਿੱਤਾ ਗਿਆ ਹੈ।'
+        : 'DAP dose too small for field application — use SSP as phosphorus source. DAP nitrogen has been compensated to Urea.';
+    }
+  }
+
+  // SSP compensation row always hidden (removed)
+  const sspCompRowEl = document.getElementById('dap-ssp-comp-row');
+  if(sspCompRowEl) sspCompRowEl.style.display = 'none';
+
+  const ce=document.getElementById('dap-n-credit');
+  if(!isWheatSmallDAP && Ndap>0){ce.style.display='block';ce.textContent=t('dap-credit')(Math.round(Ndap),Math.round(Ndapha),Ndap>=FNe);}else{ce.style.display='none';}
+
+  const Us=FNe/0.46,Usha=FNeha/0.46,SSP=FPe/0.16,SSPha=FPeha/0.16;
+  document.getElementById('t-urea-ssp').textContent    = Math.round(Us);
+  document.getElementById('t-urea-ssp-ha').textContent = Math.round(Usha);
+  document.getElementById('t-ssp').textContent         = Math.round(SSP);
+  document.getElementById('t-ssp-ha').textContent      = Math.round(SSPha);
+  document.getElementById('t-mop-ssp').textContent     = Math.round(MOP);
+  document.getElementById('t-mop-ssp-ha').textContent  = Math.round(MOPha);
+  lastDAP=displayDAP; lastDAP_ha=displayDAPha; lastIsSmallDAP=isWheatSmallDAP;
+  lastUd=Ud; lastUdha=Udha; lastUs=Us; lastUsha=Usha;
+  const as=document.getElementById('scenario-dap').style.display!=='none'?'dap':'ssp';
+  renderSplitSchedule(as==='dap'?Ud:Us, as==='dap'?Udha:Usha, activeCrop, as==='dap'?displayDAP:0, 0, as==='ssp'||isWheatSmallDAP);
+
+  // ── PAU Reference Panel update ───────────────────────────────────
+  const L_pau = activeLang==='pa';
+  const panelEl=document.getElementById('pau-panel');
+  if(panelEl){
+    panelEl.style.display='block';
+    const stcrFN=Math.round(Math.max(0,FN)), stcrFP=Math.round(Math.max(0,FP)), stcrFK=Math.round(Math.max(0,FK));
+    const pau_urea=Math.round(pau.N/0.46), pau_dap=Math.round(pau_P/0.46), pau_mop=Math.round(pau_K/0.60);
+    const rows=[
+      {label: L_pau?'ਨਾਈਟ੍ਰੋਜਨ (N)':'Nitrogen (N)',
+       stcr:`${stcrFN}`, pau_v:`${pau.N}`, unit:'kg N/acre',
+       note:'', sub:L_pau?`ਯੂਰੀਆ: ${Math.round(stcrFN/0.46)} kg/ਏਕੜ`:`Urea: ${Math.round(stcrFN/0.46)} kg/acre`,
+       pau_sub:L_pau?`ਯੂਰੀਆ: ${pau_urea} kg/ਏਕੜ`:`Urea: ${pau_urea} kg/acre`},
+      {label: L_pau?'ਫਾਸਫੋਰਸ (P₂O₅)':'Phosphorus (P₂O₅)',
+       stcr:`${stcrFP}`, pau_v:`${Math.round(pau_P)}`, unit:'kg P₂O₅/acre',
+       note: table2Applied?`Table 2 adj: ${table2Label}`:'',
+       sub:L_pau?`DAP: ${Math.round(stcrFP/0.46)} kg/ਏਕੜ`:`DAP: ${Math.round(stcrFP/0.46)} kg/acre`,
+       pau_sub:L_pau?`DAP: ${pau_dap} kg/ਏਕੜ`:`DAP: ${pau_dap} kg/acre`},
+      {label: L_pau?'ਪੋਟਾਸ਼ੀਅਮ (K₂O)':'Potassium (K₂O)',
+       stcr:`${stcrFK}`, pau_v:`${Math.round(pau_K)}`, unit:'kg K₂O/acre',
+       note: L_pau?`ਜੇ ਮਿੱਟੀ K ${SK_acre<55?'<55 (ਘਾਟਾ)':'>55 (ਕਾਫ਼ੀ)'} kg/ਏਕੜ`:`Soil K ${SK_acre<55?'< 55 (deficient)':'≥ 55 (sufficient)'}`,
+       sub:L_pau?`MOP: ${Math.round(stcrFK/0.60)} kg/ਏਕੜ`:`MOP: ${Math.round(stcrFK/0.60)} kg/acre`,
+       pau_sub:L_pau?`MOP: ${pau_mop} kg/ਏਕੜ`:`MOP: ${pau_mop} kg/acre`},
+    ];
+    document.getElementById('pau-table-body').innerHTML = rows.map(r=>`
+      <tr>
+        <td>${r.label}${r.note?`<span class="pau-cond">${r.note}</span>`:''}</td>
+        <td>${r.stcr}<span class="pau-cond">${r.sub}</span></td>
+        <td>${r.pau_v}<span class="pau-cond">${r.pau_sub}</span></td>
+        <td style="font-size:10px;color:#888;">${r.unit}</td>
+      </tr>`).join('');
+
+    // Compare note
+    const nDiff=stcrFN-pau.N, pDiff=stcrFP-Math.round(pau_P), kDiff=stcrFK-Math.round(pau_K);
+    const fmt=v=>v>0?`+${v}`:v===0?'same':`${v}`;
+    document.getElementById('pau-compare-note').innerHTML = L_pau
+      ? `<strong>STCR ਬਨਾਮ PAU ਆਮ:</strong> N: <span class="pau-stcr-diff">${fmt(nDiff)} kg/ਏਕੜ</span> · P₂O₅: <span class="pau-stcr-diff">${fmt(pDiff)} kg/ਏਕੜ</span> · K₂O: <span class="pau-stcr-diff">${fmt(kDiff)} kg/ਏਕੜ</span>`
+      : `<strong>STCR vs PAU General:</strong> N: <span class="pau-stcr-diff">${fmt(nDiff)} kg/acre</span> · P₂O₅: <span class="pau-stcr-diff">${fmt(pDiff)} kg/acre</span> · K₂O: <span class="pau-stcr-diff">${fmt(kDiff)} kg/acre</span>`;
+
+    document.getElementById('pau-table-note').textContent = L_pau
+      ? 'PAU ਆਮ ਖੁਰਾਕਾਂ ਮੱਧਮ ਉਪਜਾਊ ਮਿੱਟੀ ਲਈ ਹਨ। ਮਿੱਟੀ ਜਾਂਚ ਉਪਲਬਧ ਹੋਣ ਤੇ STCR ਸਿਫ਼ਾਰਸ਼ ਵਧੇਰੇ ਸਟੀਕ ਹੈ।'
+      : 'PAU general doses are for medium fertility soils — recommended in absence of soil test. When soil test data is available, your STCR recommendation above is the scientifically preferred PAU approach.';
+
+    document.getElementById('pau-panel-title').textContent = L_pau
+      ? 'PAU ਆਮ ਸਿਫ਼ਾਰਸ਼ (ਹਵਾਲੇ ਲਈ)'
+      : 'PAU General Recommendation (for reference)';
+    document.getElementById('pau-note').innerHTML = L_pau
+      ? 'ਇਹ PAU ਦੀਆਂ ਮੱਧਮ ਉਪਜਾਊ ਮਿੱਟੀ ਲਈ ਮਿਆਰੀ ਖੁਰਾਕਾਂ ਹਨ, <em>ਮਿੱਟੀ ਜਾਂਚ ਦੀ ਗੈਰਹਾਜ਼ਰੀ ਵਿੱਚ</em> ਸਿਫ਼ਾਰਸ਼ੀ। ਉੱਪਰ ਦਿੱਤੀ STCR ਸਿਫ਼ਾਰਸ਼ PAU ਦਾ ਤਰਜੀਹੀ ਤਰੀਕਾ ਹੈ ਜਦੋਂ ਮਿੱਟੀ ਜਾਂਚ ਡਾਟਾ ਉਪਲਬਧ ਹੋਵੇ।'
+      : 'These are PAU standard doses for medium fertility soils, recommended <em>in the absence of soil test</em>. Your STCR recommendation above is the preferred PAU approach when soil test data is available.';
+  }
+
+  const rs=document.getElementById('results-section');rs.style.display='block';rs.scrollIntoView({behavior:'smooth',block:'nearest'});
+  ['fn','fp','fk'].forEach((id,i)=>{const card=document.getElementById('card-'+id);card.classList.remove('animate');setTimeout(()=>card.classList.add('animate'),i*80);});
+}
+
+function renderSplitSchedule(urea_acre,urea_ha,crop,dap_acre,dap_ha,useSSPRule){
+  const L=activeLang==='pa';
+  let rows=[];
+
+  if(crop==='wheat'){
+    // ── Wheat Urea split schedule ──────────────────────────────────
+    // SSP rule (SSP tab or DAP<5): fixed 20 kg at sowing, remaining ÷ 2 each irrigation
+    // DAP rule (DAP ≥5): sowing = max(0, 20 − DAP_urea_equivalent), remaining ÷ 2 each irrigation
+    let basal_acre, basal_ha;
+
+    if(useSSPRule){
+      // SSP scenario: fixed 20 kg/acre at sowing, no DAP credit
+      basal_acre = 20;
+      basal_ha   = Math.round(20 * 2.471);
+    } else {
+      // DAP scenario: target 20 kg at sowing, DAP N contributes its share
+      // If residual from Urea bag < 5 kg/acre → set sowing to 0, fold into irrigations
+      const dap_urea_equiv = dap_acre ? (dap_acre * 0.18 / 0.46) : 0;
+      const sowing_from_urea = 20 - dap_urea_equiv;
+      if(sowing_from_urea < 5){
+        basal_acre = 0;
+        basal_ha   = 0;
+      } else {
+        basal_acre = Math.round(sowing_from_urea);
+        basal_ha   = Math.round(basal_acre * 2.471);
+      }
+    }
+
+    // Remaining Urea after sowing — split equally between two irrigations
+    const rem_acre = Math.round(urea_acre) - basal_acre;
+    const rem_ha   = Math.round(urea_ha)   - basal_ha;
+    const irr1_acre = Math.round(rem_acre / 2);
+    const irr2_acre = rem_acre - irr1_acre;
+    const irr1_ha   = Math.round(rem_ha / 2);
+    const irr2_ha   = rem_ha - irr1_ha;
+
+    const total_check = basal_acre + irr1_acre + irr2_acre;
+    const roundNote   = total_check !== Math.round(urea_acre)
+      ? (L ? ' (ਕੁੱਲ ±1 ਜਾਂ ਵੱਧ kg ਦਾ ਫ਼ਰਕ ਗੋਲ ਕਰਨ ਕਾਰਨ ਹੋ ਸਕਦਾ ਹੈ)' : ' (total may vary by ±1 or more kg due to rounding)') : '';
+
+    if(L){
+      rows=[
+        {t:'ਬਿਜਾਈ ਸਮੇਂ',                                              kg:basal_acre, ha:basal_ha},
+        {t:'ਪਹਿਲੀ ਸਿੰਚਾਈ ਤੋਂ ਪਹਿਲਾਂ ਜਾਂ ਬਾਅਦ',                   kg:irr1_acre,  ha:irr1_ha},
+        {t:'ਦੂਜੀ ਸਿੰਚਾਈ ਤੋਂ ਪਹਿਲਾਂ ਜਾਂ ਬਾਅਦ' + roundNote,         kg:irr2_acre,  ha:irr2_ha}
+      ];
+    } else {
+      rows=[
+        {t:'At time of sowing',                                          kg:basal_acre, ha:basal_ha},
+        {t:'Before or after first irrigation',                           kg:irr1_acre,  ha:irr1_ha},
+        {t:'Before or after second irrigation' + roundNote,              kg:irr2_acre,  ha:irr2_ha}
+      ];
+    }
+
+  } else if(crop==='rice'){
+    // ── Rice: original three equal splits, Math.round only ───────
+    const s1=Math.round(urea_acre/3), s2=Math.round(urea_acre/3), s3=Math.round(urea_acre)-s1-s2;
+    const h1=Math.round(urea_ha/3),   h2=Math.round(urea_ha/3),   h3=Math.round(urea_ha)-h1-h2;
+    if(L){
+      rows=[
+        {t:'ਲੁਆਈ ਤੋਂ 7 ਦਿਨਾਂ ਅੰਦਰ (ਪਹਿਲੀ ਖੁਰਾਕ)',  kg:s1, ha:h1},
+        {t:'ਲੁਆਈ ਤੋਂ 21 ਦਿਨਾਂ ਬਾਅਦ (ਦੂਜੀ ਖੁਰਾਕ)', kg:s2, ha:h2},
+        {t:'ਲੁਆਈ ਤੋਂ 42 ਦਿਨਾਂ ਬਾਅਦ (ਤੀਜੀ ਖੁਰਾਕ) / PR 126 ਲਈ ਕੇਵਲ ਲੁਆਈ ਤੋਂ 35 ਦਿਨਾਂ ਬਾਅਦ (ਤੀਜੀ ਖੁਰਾਕ)', kg:s3, ha:h3}
+      ];
+    } else {
+      rows=[
+        {t:'Within 7 days of transplanting (1st dose)',  kg:s1, ha:h1},
+        {t:'21 days after transplanting (2nd dose)',      kg:s2, ha:h2},
+        {t:'42 days after transplanting (3rd dose) / 35 days after transplanting for PR 126 only (3rd dose)', kg:s3, ha:h3}
+      ];
+    }
+
+  } else {
+    // ── Maize: original three equal splits, Math.round only ──────
+    const s1=Math.round(urea_acre/3), s2=Math.round(urea_acre/3), s3=Math.round(urea_acre)-s1-s2;
+    const h1=Math.round(urea_ha/3),   h2=Math.round(urea_ha/3),   h3=Math.round(urea_ha)-h1-h2;
+    if(L){
+      rows=[
+        {t:'ਬਿਜਾਈ ਸਮੇਂ',                            kg:s1, ha:h1},
+        {t:"ਗੋਡੇ ਦੀ ਉਚਾਈ ਦੇ ਪੜਾਅ 'ਤੇ",              kg:s2, ha:h2},
+        {t:'ਟੈਸਲਿੰਗ ਤੋਂ ਪਹਿਲਾਂ',                    kg:s3, ha:h3}
+      ];
+    } else {
+      rows=[
+        {t:'At sowing',              kg:s1, ha:h1},
+        {t:'At knee height stage',   kg:s2, ha:h2},
+        {t:'At pre-tasseling stage', kg:s3, ha:h3}
+      ];
+    }
+  }
+
+  const pkNote={
+    rice:  L?'DAP/SSP ਅਤੇ MOP ਦੀ ਪੂਰੀ ਮਾਤਰਾ ਲੁਆਈ ਸਮੇਂ ਪਾਓ।':'Apply full dose of DAP/SSP and MOP at the time of transplanting.',
+    maize: L?'DAP/SSP ਅਤੇ MOP ਦੀ ਪੂਰੀ ਮਾਤਰਾ ਬਿਜਾਈ ਸਮੇਂ ਪਾਓ।':'Apply full dose of DAP/SSP and MOP at the time of sowing.',
+    wheat: L?'DAP/SSP ਅਤੇ MOP ਦੀ ਪੂਰੀ ਮਾਤਰਾ ਬਿਜਾਈ ਸਮੇਂ ਪਾਓ।':'Apply full dose of DAP/SSP and MOP at the time of sowing.'
+  };
+  document.getElementById('split-title').textContent=L?'ਯੂਰੀਆ ਖੁਰਾਕ ਵੰਡ ਸਮਾਂ-ਸਾਰਣੀ':'Urea Application Schedule';
+  document.getElementById('split-pk-note').textContent=pkNote[crop]||pkNote.rice;
+  const kgL=L?'ਕਿੱਲੋ ਯੂਰੀਆ/ਏਕੜ':'kg Urea/acre', haL=L?'ਕਿੱਲੋ/ਹੈਕਟੇਅਰ':'kg/ha';
+  document.getElementById('split-rows').innerHTML=rows.map((r,i)=>`<div class="split-row"><div class="split-num">${i+1}</div><div class="split-body"><div class="split-timing">${r.t}</div><div class="split-amount">${r.kg} ${kgL} <span class="split-amount-ha">(${r.ha} ${haL})</span></div></div></div>`).join('');
+  document.getElementById('split-schedule').style.display=urea_acre>=0?'block':'none';
+}
+
+function switchScenario(s){
+  document.getElementById('scenario-dap').style.display=s==='dap'?'block':'none';
+  document.getElementById('scenario-ssp').style.display=s==='ssp'?'block':'none';
+  document.getElementById('tab-dap').classList.toggle('active',s==='dap');
+  document.getElementById('tab-ssp').classList.toggle('active',s==='ssp');
+  if(lastFN!==null && lastUd!==null){
+    // Use the exact Urea values computed during calculate() for each scenario
+    const ua  = s==='dap' ? lastUd   : lastUs;
+    const uh  = s==='dap' ? lastUdha : lastUsha;
+    const dap = s==='dap' ? lastDAP  : 0;
+    const useSSP = s==='ssp' || (s==='dap' && lastIsSmallDAP);
+    renderSplitSchedule(ua, uh, activeCrop, dap, 0, useSSP);
+  }
+}
+
+
+function togglePauPanel(){
+  const body=document.getElementById('pau-panel-body');
+  const ch=document.getElementById('pau-panel-chevron');
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  ch.style.transform=open?'':'rotate(180deg)';
+}
+
+
+function setPrevP(val){
+  prevCropP=val;
+  document.getElementById('prev-p-no').classList.toggle('active',!val);
+  document.getElementById('prev-p-yes').classList.toggle('active',val);
+  clearResults();
+}
+
+function toggleCardHelp(){
+  const b=document.getElementById('help-card-body'),ch=document.getElementById('help-card-chevron');
+  const o=b.style.display!=='none';b.style.display=o?'none':'block';ch.style.transform=o?'':'rotate(180deg)';
+}
+
+function renderHelpContent(){
+  const L=activeLang==='pa';
+  document.getElementById('help-card-label').textContent=L?'ਵਰਤੋਂ ਕਿਵੇਂ ਕਰੀਏ':'How to Use';
+  const hcMap={
+    'hc-q1':L?'ਇਹ ਐਪ ਕੀ ਹੈ?':'What is this app?',
+    'hc-p1':L?'PAU Khad Guide ਤੁਹਾਨੂੰ ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਅਤੇ ਟੀਚਾ ਝਾੜ ਦੇ ਆਧਾਰ \'ਤੇ ਸਹੀ ਖਾਦ ਦੀ ਮਾਤਰਾ ਦੱਸਦੀ ਹੈ।':'PAU Khad Guide helps you calculate the right amount of fertilizer for your crop based on your soil test report and target yield.',
+    'hc-q2':L?'ਵਰਤੋਂ ਦੇ 3 ਸੌਖੇ ਕਦਮ':'How to use — 3 simple steps',
+    'hc-s1':L?'ਫ਼ਸਲ ਚੁਣੋ ਅਤੇ ਕਣਕ ਲਈ ਰਹਿੰਦ-ਖੂੰਹਦ ਪ੍ਰਬੰਧਨ ਤਰੀਕਾ ਚੁਣੋ।':'Select your crop (Rice, Maize or Wheat) and, for Wheat, the rice residue management practice.',
+    'hc-s2':L?'ਟੀਚਾ ਝਾੜ ਕੁਇੰਟਲ/ਏਕੜ ਵਿੱਚ ਦਰਜ ਕਰੋ।':'Enter your target yield in quintals per acre.',
+    'hc-s3':L?'SN, SP, SK (kg/ਏਕੜ) ਦਰਜ ਕਰੋ ਜਾਂ OC% ਦਰਜ ਕਰੋ ਜੇ SN ਉਪਲਬਧ ਨਹੀਂ।':'Enter Soil N, Soil P and Soil K (kg/acre) from your soil test report — or enter OC% if Soil N is not available.',
+    'hc-q3':L?'ਕੀ ਮਿਲਦਾ ਹੈ':'What you get',
+    'hc-g1':L?'ਖਾਦ ਦੀ ਲੋੜ kg/ਏਕੜ (ਅਤੇ kg/ha) ਵਿੱਚ':'Recommended fertilizer doses in kg/acre (and kg/ha)',
+    'hc-g2':L?'ਯੂਰੀਆ, DAP/SSP ਅਤੇ MOP ਦੀ ਮਾਤਰਾ — ਬੋਰੀਆਂ ਦੀ ਗਿਣਤੀ ਜਾਣੋ':'Ready-to-use product quantities — Urea, DAP or SSP, and MOP',
+    'hc-g3':L?'ਨਤੀਜੇ kg/ਏਕੜ ਅਤੇ kg/ha ਦੋਵਾਂ ਵਿੱਚ':'Results in both kg/acre and kg/ha',
+    'hc-q4':L?'ਜ਼ਰੂਰੀ ਸੁਝਾਅ':'Important tips',
+    'hc-t1':L?'ਖਾਦ ਪਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਮਿੱਟੀ ਜਾਂਚ ਕਰਵਾਓ।':'Always get your soil tested before applying fertilizers — it saves money and improves yield.',
+    'hc-t2':L?'ਵਾਢੀ ਤੋਂ ਬਾਅਦ ਅਤੇ ਅਗਲੀ ਬਿਜਾਈ ਤੋਂ ਘੱਟੋ-ਘੱਟ 2–3 ਹਫ਼ਤੇ ਪਹਿਲਾਂ ਮਿੱਟੀ ਦੇ ਨਮੂਨੇ ਲਓ। PAU ਸਿਫ਼ਾਰਸ਼ ਕਰਦਾ ਹੈ ਕਿ ਉਸੇ ਖੇਤ ਦੀ ਮਿੱਟੀ ਹਰ 2–3 ਸਾਲ ਬਾਅਦ ਜਾਂਚੀ ਜਾਵੇ। ਹਮੇਸ਼ਾ ਮਨਜ਼ੂਰਸ਼ੁਦਾ ਮਿੱਟੀ ਜਾਂਚ ਪ੍ਰਯੋਗਸ਼ਾਲਾ ਤੋਂ ਜਾਂਚ ਕਰਵਾਓ।':'Collect soil samples after harvest and at least 2–3 weeks before the next sowing. PAU recommends soil testing every 2–3 years from the same field. Always use an approved soil testing laboratory for reliable results.',
+    'hc-t3':L?'ਜੇ ਮਿੱਟੀ ਵਿੱਚ ਕਾਫ਼ੀ ਪੌਸ਼ਟਿਕ ਤੱਤ ਹੈ, ਐਪ ਜ਼ੀਰੋ ਦਿਖਾਵੇਗੀ।':'If your soil nutrient level is high, the app may show zero dose — your soil already has enough.',
+    'hc-t4':L?'ਟੀਚਾ ਝਾੜ ਯਥਾਰਥਵਾਦੀ ਰੱਖੋ।':'Target yield should be realistic — over-estimating leads to wasteful fertilizer use.',
+    'hc-t5':L?'ਇਹ ਐਪ ਪੰਜਾਬ ਦੀਆਂ ਖੇਤੀ-ਜਲਵਾਯੂ ਹਾਲਤਾਂ ਲਈ ਕੈਲੀਬ੍ਰੇਟ ਕੀਤੀ ਗਈ ਹੈ।':'This app is calibrated for Punjab agro-climatic conditions and may not apply directly to other regions.',
+    'hc-t6':L?'ਅਸਧਾਰਨ ਮੌਸਮ, ਕੀੜੇ ਜਾਂ ਸਿੰਚਾਈ ਰੁਕਾਵਟਾਂ ਅਸਲ ਖਾਦ ਪ੍ਰਤੀਕਿਰਿਆ ਨੂੰ ਬਦਲ ਸਕਦੀਆਂ ਹਨ।':'Recommendations assume normal crop management; abnormal weather, pest pressure or irrigation constraints may alter fertilizer response.'
+  };
+  Object.entries(hcMap).forEach(([id,txt])=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
+  const l2=document.getElementById('footer-line2');
+  if(l2)l2.textContent=L?'ਡਾ. ਜਗਦੀਪ ਸਿੰਘ ਦੁਆਰਾ ਵਿਕਸਿਤ, ਸੀਨੀਅਰ ਸੁਆਇਲ ਕੈਮਿਸਟ, ਭੂਮੀ ਵਿਗਿਆਨ ਵਿਭਾਗ, PAU, ਲੁਧਿਆਣਾ':'Developed by Dr. Jagdeep Singh, Senior Soil Chemist, Department of Soil Science, Punjab Agricultural University, Ludhiana';
+}
+
+setLang('en');
+selectCrop('rice');
+</script>
 </body>
-
 </html>
