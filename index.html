@@ -385,7 +385,7 @@
     <div class="help-card-body" id="help-card-body" style="display:none;">
       <div class="hc-section">
         <div class="hc-q" id="hc-q1">What is this app?</div>
-        <p id="hc-p1">A soil-test based fertilizer calculator for Rice, Wheat and Maize in Punjab. It tells you the right fertilizer, the right amount, and the right time to apply it — for your specific field, based on your soil test report and target yield. Built on PAU recommendations combined with Soil Test Crop Response (STCR) calibrations — a method that links soil-test values to actual crop response.</p>
+        <p id="hc-p1">A soil-test based fertilizer calculator for Rice, Wheat and Maize in Punjab. It tells you the right fertilizer, the right amount, and the right time to apply it — for your specific field, based on your soil test report and target yield. Built on PAU recommendations.</p>
       </div>
       <div class="hc-section">
         <div class="hc-q" id="hc-q2">How to use — 3 simple steps</div>
@@ -413,7 +413,7 @@
           <li id="hc-t4">Target yield should be realistic for your field conditions — over-estimating leads to wasteful fertilizer use.</li>
           <li id="hc-t5">This app is calibrated for Punjab agro-climatic conditions and may not apply directly to other regions.</li>
           <li id="hc-t6">Recommendations assume normal crop management; abnormal weather, pest pressure or irrigation constraints may alter actual fertilizer response.</li>
-          <li id="hc-t7">For wheat: if rice residue has been continuously incorporated or mulched in the same field for 3 or more years, the urea dose can be reduced by about 20 kg/acre due to improved soil nitrogen supply.</li>
+          <li id="hc-t7">For wheat: the urea dose is automatically reduced by ~20 kg/acre when rice residue has been continuously incorporated or mulched in the same field for 3+ years.</li>
           <li id="hc-t8">Apply the full DAP/SSP and MOP dose at sowing. Split the urea dose as shown in the application schedule — it gives better results than applying it all at once.</li>
         </ul>
       </div>
@@ -1483,13 +1483,13 @@ function renderHelpContent(){
   document.getElementById('help-card-label').textContent=L?'ਵਰਤੋਂ ਕਿਵੇਂ ਕਰੀਏ':'How to Use';
   const hcMap={
     'hc-q1':L?'ਇਹ ਐਪ ਕੀ ਹੈ?':'What is this app?',
-    'hc-p1':L?'ਪੰਜਾਬ ਵਿੱਚ ਝੋਨਾ, ਕਣਕ ਤੇ ਮੱਕੀ ਲਈ ਮਿੱਟੀ-ਪਰਖ ਆਧਾਰਿਤ ਖਾਦ ਕੈਲਕੁਲੇਟਰ। ਇਹ ਤੁਹਾਡੇ ਖੇਤ ਲਈ ਸਹੀ ਖਾਦ, ਸਹੀ ਮਾਤਰਾ ਅਤੇ ਸਹੀ ਸਮਾਂ ਦੱਸਦੀ ਹੈ — ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਅਤੇ ਟੀਚਾ ਝਾੜ ਦੇ ਆਧਾਰ \'ਤੇ। PAU ਦੀਆਂ ਸਿਫ਼ਾਰਸ਼ਾਂ ਅਤੇ ਮਿੱਟੀ-ਪਰਖ ਫ਼ਸਲ ਪ੍ਰਤੀਕਿਰਿਆ (STCR) ਕੈਲੀਬ੍ਰੇਸ਼ਨਾਂ \'ਤੇ ਆਧਾਰਿਤ — ਇੱਕ ਅਜਿਹੀ ਪ੍ਰਣਾਲੀ ਜੋ ਮਿੱਟੀ ਜਾਂਚ ਨੂੰ ਅਸਲ ਫ਼ਸਲ ਪ੍ਰਤੀਕਿਰਿਆ ਨਾਲ ਜੋੜਦੀ ਹੈ।':'A soil-test based fertilizer calculator for Rice, Wheat and Maize in Punjab. It tells you the right fertilizer, the right amount, and the right time to apply it — for your specific field, based on your soil test report and target yield. Built on PAU recommendations combined with Soil Test Crop Response (STCR) calibrations — a method that links soil-test values to actual crop response.',
+    'hc-p1':L?'ਪੰਜਾਬ ਵਿੱਚ ਝੋਨਾ, ਕਣਕ ਤੇ ਮੱਕੀ ਲਈ ਮਿੱਟੀ-ਪਰਖ ਆਧਾਰਿਤ ਖਾਦ ਕੈਲਕੁਲੇਟਰ। ਇਹ ਤੁਹਾਡੇ ਖੇਤ ਲਈ ਸਹੀ ਖਾਦ, ਸਹੀ ਮਾਤਰਾ ਅਤੇ ਸਹੀ ਸਮਾਂ ਦੱਸਦੀ ਹੈ — ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਅਤੇ ਟੀਚਾ ਝਾੜ ਦੇ ਆਧਾਰ \'ਤੇ। PAU ਦੀਆਂ ਸਿਫ਼ਾਰਸ਼ਾਂ \'ਤੇ ਆਧਾਰਿਤ।':'A soil-test based fertilizer calculator for Rice, Wheat and Maize in Punjab. It tells you the right fertilizer, the right amount, and the right time to apply it — for your specific field, based on your soil test report and target yield. Built on PAU recommendations.',
     'hc-q2':L?'ਵਰਤੋਂ ਦੇ 3 ਸੌਖੇ ਕਦਮ':'How to use — 3 simple steps',
     'hc-s1':L?'ਫ਼ਸਲ ਚੁਣੋ (ਝੋਨਾ, ਮੱਕੀ ਜਾਂ ਕਣਕ)। ਕਣਕ ਲਈ, ਪਿਛਲੀ ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਦਾ ਪ੍ਰਬੰਧ ਵੀ ਚੁਣੋ — ਹਟਾਈ ਗਈ, ਵਾਹੀ ਗਈ, ਜਾਂ ਮਲਚਿੰਗ — ਕਿਉਂਕਿ ਇਹ ਮਿੱਟੀ ਵੱਲੋਂ ਮਿਲਣ ਵਾਲੀ ਨਾਈਟ੍ਰੋਜਨ ਨੂੰ ਬਦਲਦਾ ਹੈ।':'Select your crop (Rice, Maize or Wheat). For Wheat, also choose how the previous rice residue was handled — Removed, Incorporated, or Mulching — because this changes how much nitrogen the soil supplies.',
     'hc-s2':L?'ਟੀਚਾ ਝਾੜ ਕੁਇੰਟਲ/ਏਕੜ ਵਿੱਚ ਦਰਜ ਕਰੋ। ਆਪਣੇ ਖੇਤ ਲਈ ਯਥਾਰਥਵਾਦੀ ਰੱਖੋ — ਐਪ ਹਰ ਫ਼ਸਲ ਲਈ ਉਚਿਤ ਸੀਮਾ ਦਿਖਾਉਂਦੀ ਹੈ।':'Enter your target yield in quintals per acre. Keep it realistic for your field — the app shows a sensible range for each crop.',
-    'hc-s3':L?'ਆਪਣੀ PAU ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਤੋਂ Soil N, Soil P ਅਤੇ Soil K (kg/ਏਕੜ) ਦਰਜ ਕਰੋ — ਜਾਂ Soil N ਉਪਲਬਧ ਨਹੀਂ ਹੈ ਤਾਂ ਜੈਵਿਕ ਕਾਰਬਨ % ਦਰਜ ਕਰੋ। ਝੋਨੇ ਅਤੇ ਮੱਕੀ ਲਈ, ਇਹ ਵੀ ਪੁੱਛਿਆ ਜਾਵੇਗਾ ਕਿ ਕੀ ਪਿਛਲੀ ਫ਼ਸਲ ਨੂੰ ਪੂਰੀ P₂O₅ ਖੁਰਾਕ ਮਿਲੀ ਸੀ; ਜੇ ਹਾਂ, ਤਾਂ ਇਸ ਫ਼ਸਲ ਦੀ P ਲੋੜ ਘਟਾਈ ਜਾਵੇਗੀ।':'Enter Soil N, Soil P and Soil K (kg/acre) from your PAU soil test report — or enter Organic Carbon % if Soil N is not available. For Rice and Maize, you\'ll also be asked whether the previous crop received its full P₂O₅ dose; if yes, this crop\'s P need is reduced.',
+    'hc-s3':L?'ਆਪਣੀ PAU ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਤੋਂ Soil N, Soil P ਅਤੇ Soil K (ਕਿਲੋ/ਏਕੜ) ਦਰਜ ਕਰੋ — ਜਾਂ Soil N ਉਪਲਬਧ ਨਹੀਂ ਹੈ ਤਾਂ ਜੈਵਿਕ ਕਾਰਬਨ % ਦਰਜ ਕਰੋ। ਝੋਨੇ ਅਤੇ ਮੱਕੀ ਲਈ, ਇਹ ਵੀ ਪੁੱਛਿਆ ਜਾਵੇਗਾ ਕਿ ਕੀ ਪਿਛਲੀ ਫ਼ਸਲ ਨੂੰ ਪੂਰੀ P₂O₅ ਖੁਰਾਕ ਮਿਲੀ ਸੀ; ਜੇ ਹਾਂ, ਤਾਂ ਇਸ ਫ਼ਸਲ ਦੀ P ਲੋੜ ਘਟਾਈ ਜਾਵੇਗੀ।':'Enter Soil N, Soil P and Soil K (kg/acre) from your PAU soil test report — or enter Organic Carbon % if Soil N is not available. For Rice and Maize, you\'ll also be asked whether the previous crop received its full P₂O₅ dose; if yes, this crop\'s P need is reduced.',
     'hc-q3':L?'ਕੀ ਮਿਲਦਾ ਹੈ':'What you get',
-    'hc-g1':L?'N, P₂O₅ ਅਤੇ K₂O ਦੀ ਸਿਫ਼ਾਰਸ਼ੀ ਖੁਰਾਕ — kg/ਏਕੜ ਅਤੇ kg/ha ਦੋਵਾਂ ਵਿੱਚ':'Recommended N, P₂O₅ and K₂O doses in both kg/acre and kg/ha',
+    'hc-g1':L?'N, P₂O₅ ਅਤੇ K₂O ਦੀ ਸਿਫ਼ਾਰਸ਼ੀ ਖੁਰਾਕ — ਕਿਲੋ/ਏਕੜ ਅਤੇ ਕਿਲੋ/ਹੈਕਟੇਅਰ ਦੋਵਾਂ ਵਿੱਚ':'Recommended N, P₂O₅ and K₂O doses in both kg/acre and kg/ha',
     'hc-g2':L?'ਯੂਰੀਆ, DAP ਜਾਂ SSP, ਅਤੇ MOP ਦੀ ਮਾਤਰਾ — ਤਾਂ ਜੋ ਤੁਹਾਨੂੰ ਪਤਾ ਚੱਲੇ ਕਿਨੀਆਂ ਬੋਰੀਆਂ ਖਰੀਦਣੀਆਂ ਹਨ':'Ready-to-use product quantities — Urea, DAP or SSP, and MOP — so you know exactly how many bags to buy',
     'hc-g3':L?'ਯੂਰੀਆ ਦੀ ਅਰਜ਼ੀ ਅਨੁਸੂਚੀ — ਬਿਜਾਈ ਵੇਲੇ, ਪਹਿਲੀ ਸਿੰਚਾਈ ਤੋਂ ਪਹਿਲਾਂ, ਅਤੇ ਦੂਜੀ ਸਿੰਚਾਈ ਤੋਂ ਪਹਿਲਾਂ ਕਿੰਨੀ ਪਾਉਣੀ ਹੈ':'A urea application schedule showing when to apply each split — at sowing, before first irrigation, and before second irrigation',
     'hc-g4':L?'ਫਾਸਫੋਰਸ ਦੇ ਦੋ ਵਿਕਲਪ ਨਾਲ-ਨਾਲ — DAP ਵਰਤਣਾ (ਜੋ ਕੁਝ N ਵੀ ਦਿੰਦਾ ਹੈ) ਜਾਂ SSP ਵਰਤਣਾ':'Two phosphorus options side-by-side — using DAP (which also supplies some N) or using SSP',
@@ -1500,7 +1500,7 @@ function renderHelpContent(){
     'hc-t4':L?'ਟੀਚਾ ਝਾੜ ਆਪਣੇ ਖੇਤ ਦੀਆਂ ਹਾਲਤਾਂ ਲਈ ਯਥਾਰਥਵਾਦੀ ਰੱਖੋ — ਜ਼ਿਆਦਾ ਅੰਦਾਜ਼ਾ ਲਾਉਣ ਨਾਲ ਖਾਦ ਦੀ ਬਰਬਾਦੀ ਹੁੰਦੀ ਹੈ।':'Target yield should be realistic for your field conditions — over-estimating leads to wasteful fertilizer use.',
     'hc-t5':L?'ਇਹ ਐਪ ਪੰਜਾਬ ਦੀਆਂ ਖੇਤੀ-ਜਲਵਾਯੂ ਹਾਲਤਾਂ ਲਈ ਕੈਲੀਬ੍ਰੇਟ ਕੀਤੀ ਗਈ ਹੈ ਅਤੇ ਹੋਰ ਖੇਤਰਾਂ ਲਈ ਸਿੱਧੀ ਲਾਗੂ ਨਹੀਂ ਹੋ ਸਕਦੀ।':'This app is calibrated for Punjab agro-climatic conditions and may not apply directly to other regions.',
     'hc-t6':L?'ਸਿਫ਼ਾਰਸ਼ਾਂ ਆਮ ਫ਼ਸਲ ਪ੍ਰਬੰਧਨ ਮੰਨ ਕੇ ਕੀਤੀਆਂ ਗਈਆਂ ਹਨ; ਅਸਧਾਰਨ ਮੌਸਮ, ਕੀੜੇ ਜਾਂ ਸਿੰਚਾਈ ਰੁਕਾਵਟਾਂ ਅਸਲ ਖਾਦ ਪ੍ਰਤੀਕਿਰਿਆ ਨੂੰ ਬਦਲ ਸਕਦੀਆਂ ਹਨ।':'Recommendations assume normal crop management; abnormal weather, pest pressure or irrigation constraints may alter actual fertilizer response.',
-    'hc-t7':L?'ਕਣਕ ਲਈ: ਜੇ ਉਸੇ ਖੇਤ ਵਿੱਚ 3 ਜਾਂ ਵੱਧ ਸਾਲ ਲਗਾਤਾਰ ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਵਾਹੀ ਜਾਂ ਮਲਚਿੰਗ ਕੀਤੀ ਗਈ ਹੈ, ਤਾਂ ਮਿੱਟੀ ਵਿੱਚ ਨਾਈਟ੍ਰੋਜਨ ਦੀ ਸਪਲਾਈ ਵਧਣ ਕਾਰਨ ਯੂਰੀਆ ਦੀ ਖੁਰਾਕ ਲਗਭਗ 20 kg/ਏਕੜ ਘਟਾਈ ਜਾ ਸਕਦੀ ਹੈ।':'For wheat: if rice residue has been continuously incorporated or mulched in the same field for 3 or more years, the urea dose can be reduced by about 20 kg/acre due to improved soil nitrogen supply.',
+    'hc-t7':L?'ਕਣਕ ਲਈ: ਯੂਰੀਆ ਦੀ ਖੁਰਾਕ ਆਪਣੇ-ਆਪ ~20 ਕਿਲੋ/ਏਕੜ ਘਟਾਈ ਜਾਂਦੀ ਹੈ ਜਦੋਂ ਉਸੇ ਖੇਤ ਵਿੱਚ 3+ ਸਾਲ ਲਗਾਤਾਰ ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਵਾਹੀ ਜਾਂ ਮਲਚਿੰਗ ਕੀਤੀ ਗਈ ਹੋਵੇ।':'For wheat: the urea dose is automatically reduced by ~20 kg/acre when rice residue has been continuously incorporated or mulched in the same field for 3+ years.',
     'hc-t8':L?'DAP/SSP ਅਤੇ MOP ਦੀ ਪੂਰੀ ਖੁਰਾਕ ਬਿਜਾਈ ਵੇਲੇ ਪਾਓ। ਯੂਰੀਆ ਨੂੰ ਅਨੁਸੂਚੀ ਅਨੁਸਾਰ ਵੰਡ ਕੇ ਪਾਓ — ਇਹ ਇੱਕੋ ਵਾਰ ਪਾਉਣ ਨਾਲੋਂ ਬਿਹਤਰ ਨਤੀਜੇ ਦਿੰਦਾ ਹੈ।':'Apply the full DAP/SSP and MOP dose at sowing. Split the urea dose as shown in the application schedule — it gives better results than applying it all at once.'
   };
   Object.entries(hcMap).forEach(([id,txt])=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
