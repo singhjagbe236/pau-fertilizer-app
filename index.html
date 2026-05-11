@@ -368,9 +368,9 @@
 </header>
 
 <section class="hero">
-  <div class="hero-eyebrow" id="hero-eyebrow">Soil-Test Based Recommendation</div>
-  <h1 id="hero-title">Calculate your <em>precise</em> fertilizer requirement</h1>
-  <p id="hero-desc">Enter your target yield and soil nutrient levels to get crop-specific N, P₂O₅ and K₂O recommendations in kg/acre.</p>
+  <div class="hero-eyebrow" id="hero-eyebrow">Soil-test based recommendations for Rice, Wheat and Maize</div>
+  <h1 id="hero-title">Right fertilizer, right amount, <em>right time</em></h1>
+  <p id="hero-desc">Enter your target yield and soil values — know exactly how much Urea, DAP, SSP and MOP to use, and when.</p>
 </section>
 
 <div class="card-wrap">
@@ -385,22 +385,23 @@
     <div class="help-card-body" id="help-card-body" style="display:none;">
       <div class="hc-section">
         <div class="hc-q" id="hc-q1">What is this app?</div>
-        <p id="hc-p1">PAU Khad Guide helps you calculate the right amount of fertilizer for your crop based on your soil test report and target yield. It gives you crop-specific recommendations for Nitrogen (N), Phosphorus (P₂O₅), and Potassium (K₂O).</p>
+        <p id="hc-p1">A soil-test based fertilizer calculator for Rice, Wheat and Maize in Punjab. It tells you the right fertilizer, the right amount, and the right time to apply it — for your specific field, based on your soil test report and target yield. Built on PAU recommendations combined with Soil Test Crop Response (STCR) calibrations — a method that links soil-test values to actual crop response.</p>
       </div>
       <div class="hc-section">
         <div class="hc-q" id="hc-q2">How to use — 3 simple steps</div>
         <div class="hc-steps">
-          <div class="hc-step"><span class="hc-num">1</span><span id="hc-s1">Select your crop (Rice, Maize or Wheat) and, for Wheat, the rice residue management practice you follow.</span></div>
-          <div class="hc-step"><span class="hc-num">2</span><span id="hc-s2">Enter your target yield in quintals per acre.</span></div>
-          <div class="hc-step"><span class="hc-num">3</span><span id="hc-s3">Enter Soil N, Soil P and Soil K (kg/acre) from your PAU soil test report — or enter Organic Carbon % if Soil N is not available.</span></div>
+          <div class="hc-step"><span class="hc-num">1</span><span id="hc-s1">Select your crop (Rice, Maize or Wheat). For Wheat, also choose how the previous rice residue was handled — Removed, Incorporated, or Mulching — because this changes how much nitrogen the soil supplies.</span></div>
+          <div class="hc-step"><span class="hc-num">2</span><span id="hc-s2">Enter your target yield in quintals per acre. Keep it realistic for your field — the app shows a sensible range for each crop.</span></div>
+          <div class="hc-step"><span class="hc-num">3</span><span id="hc-s3">Enter Soil N, Soil P and Soil K (kg/acre) from your PAU soil test report — or enter Organic Carbon % if Soil N is not available. For Rice and Maize, you'll also be asked whether the previous crop received its full P₂O₅ dose; if yes, this crop's P need is reduced.</span></div>
         </div>
       </div>
       <div class="hc-section">
         <div class="hc-q" id="hc-q3">What you get</div>
         <ul class="hc-list">
-          <li id="hc-g1">Recommended fertilizer doses in kg/acre (and kg/ha)</li>
+          <li id="hc-g1">Recommended N, P₂O₅ and K₂O doses in both kg/acre and kg/ha</li>
           <li id="hc-g2">Ready-to-use product quantities — Urea, DAP or SSP, and MOP — so you know exactly how many bags to buy</li>
-          <li id="hc-g3">Results in both kg/acre and kg/ha</li>
+          <li id="hc-g3">A urea application schedule showing when to apply each split — at sowing, before first irrigation, and before second irrigation</li>
+          <li id="hc-g4">Two phosphorus options side-by-side — using DAP (which also supplies some N) or using SSP</li>
         </ul>
       </div>
       <div class="hc-section">
@@ -412,6 +413,8 @@
           <li id="hc-t4">Target yield should be realistic for your field conditions — over-estimating leads to wasteful fertilizer use.</li>
           <li id="hc-t5">This app is calibrated for Punjab agro-climatic conditions and may not apply directly to other regions.</li>
           <li id="hc-t6">Recommendations assume normal crop management; abnormal weather, pest pressure or irrigation constraints may alter actual fertilizer response.</li>
+          <li id="hc-t7">For wheat: if rice residue has been continuously incorporated or mulched in the same field for 3 or more years, the urea dose can be reduced by about 20 kg/acre due to improved soil nitrogen supply.</li>
+          <li id="hc-t8">Apply the full DAP/SSP and MOP dose at sowing. Split the urea dose as shown in the application schedule — it gives better results than applying it all at once.</li>
         </ul>
       </div>
     </div>
@@ -523,20 +526,20 @@
         <!-- Previous crop P toggle — rice and maize only -->
         <div id="prev-p-wrap" style="display:none;margin-top:.75rem;">
           <div style="background:#fff8e1;border:1.5px solid #f9a825;border-radius:10px;padding:12px 14px;">
-            <div style="font-size:13px;font-weight:600;color:#1a3a2a;margin-bottom:8px;" id="prev-p-label">
+            <div style="font-size:13px;font-weight:600;color:#1a3a2a;margin-bottom:8px;" id="prev-p-label" data-i18n="prev-p-label">
               Did the previous crop receive the recommended P₂O₅ dose?
             </div>
             <div style="display:flex;gap:10px;">
               <button class="prev-p-btn active" id="prev-p-no"  onclick="setPrevP(false)"
                 style="flex:1;padding:8px;border:1.5px solid #ccc;border-radius:8px;background:#f5f5f5;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;">
-                No
+                <span data-i18n="prev-p-no">No</span>
               </button>
               <button class="prev-p-btn" id="prev-p-yes" onclick="setPrevP(true)"
                 style="flex:1;padding:8px;border:1.5px solid #ccc;border-radius:8px;background:#f5f5f5;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;">
-                Yes — Skip P
+                <span data-i18n="prev-p-yes">Yes — Skip P</span>
               </button>
             </div>
-            <div style="font-size:11px;color:#7c5c3a;margin-top:6px;line-height:1.6;" id="prev-p-hint">
+            <div style="font-size:11px;color:#7c5c3a;margin-top:6px;line-height:1.6;" id="prev-p-hint" data-i18n="prev-p-hint">
               If yes, P₂O₅ dose will be set to zero for this crop.
             </div>
           </div>
@@ -606,18 +609,19 @@
                 <td>
                   <div class="fert-bag-cell">
                     <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>Urea bag</title>
-                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
-                      <line x1="4" y1="30" x2="106" y2="30" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#a5d6a7" stroke-width="0.8"/>
-                      <line x1="4" y1="102" x2="106" y2="102" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#a5d6a7" stroke-width="0.8"/>
-                      <line x1="20" y1="22" x2="20" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#a5d6a7" stroke-width="0.8"/>
-                      <rect x="0" y="68" width="110" height="34" fill="#2e7d32"/>
-                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
-                      <line x1="14" y1="19" x2="96" y2="19" stroke="#2e7d32" stroke-width="0.8" stroke-dasharray="4,3"/>
-                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
-                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">UREA</text>
-                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#a5d6a7">Nitrogen Fertilizer</text>
-                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#2e7d32">45 kg NET</text>
-                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#2e7d32">N: 46%</text>
+                      <!-- Solid dark green bag body -->
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#1b5e20" stroke="#0d3811" stroke-width="1.5"/>
+                      <!-- Top tied/crimped edge -->
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#1b5e20" stroke="#0d3811" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#0d3811" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <!-- Bottom seam -->
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#1b5e20" stroke="#0d3811" stroke-width="1"/>
+                      <!-- Prominent UREA text -->
+                      <text x="55" y="72" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="900" fill="#ffffff" letter-spacing="2">UREA</text>
+                      <!-- Prominent N: 46% -->
+                      <text x="55" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="800" fill="#ffeb3b" letter-spacing="1">N: 46%</text>
+                      <!-- Small subtitle -->
+                      <text x="55" y="125" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="600" fill="#a5d6a7" letter-spacing="0.5">NITROGEN FERTILIZER</text>
                     </svg>
                   </div>
                   <span class="fert-source" data-i18n="urea-src-dap">46% N — adjusted after DAP N credit</span>
@@ -633,18 +637,20 @@
                 <td>
                   <div class="fert-bag-cell">
                     <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>DAP bag</title>
-                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fff3e0" stroke="#bf360c" stroke-width="1.5"/>
-                      <line x1="4" y1="30" x2="106" y2="30" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#ffcc80" stroke-width="0.8"/>
-                      <line x1="4" y1="102" x2="106" y2="102" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#ffcc80" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#ffcc80" stroke-width="0.8"/>
-                      <line x1="20" y1="22" x2="20" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#ffcc80" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#ffcc80" stroke-width="0.8"/>
-                      <rect x="0" y="68" width="110" height="34" fill="#bf360c"/>
-                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#ffe0b2" stroke="#bf360c" stroke-width="1"/>
-                      <line x1="14" y1="19" x2="96" y2="19" stroke="#bf360c" stroke-width="0.8" stroke-dasharray="4,3"/>
-                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#ffe0b2" stroke="#bf360c" stroke-width="1"/>
-                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">DAP</text>
-                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#ffccbc">Di-Ammonium Phosphate</text>
-                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#bf360c">45 kg NET</text>
-                      <text x="55" y="113" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#bf360c">N:18%  P₂O₅:46%</text>
+                      <!-- Solid dark orange bag body -->
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#bf360c" stroke="#7a2208" stroke-width="1.5"/>
+                      <!-- Top tied/crimped edge -->
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#bf360c" stroke="#7a2208" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#7a2208" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <!-- Bottom seam -->
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#bf360c" stroke="#7a2208" stroke-width="1"/>
+                      <!-- Prominent DAP text -->
+                      <text x="55" y="58" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="900" fill="#ffffff" letter-spacing="2">DAP</text>
+                      <!-- Highly prominent N & P percentages — bright yellow, large, bold -->
+                      <text x="55" y="86" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="#ffeb3b" letter-spacing="0.8">N: 18%</text>
+                      <text x="55" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="900" fill="#ffeb3b" letter-spacing="0.5">P₂O₅: 46%</text>
+                      <!-- Small subtitle -->
+                      <text x="55" y="128" text-anchor="middle" font-family="Arial,sans-serif" font-size="6.5" font-weight="600" fill="#ffccbc" letter-spacing="0.3">DI-AMMONIUM PHOSPHATE</text>
                     </svg>
                   </div>
                   <span class="fert-source" data-i18n="dap-src">Di-Ammonium Phosphate — 18% N, 46% P₂O₅</span>
@@ -657,18 +663,19 @@
                 <td>
                   <div class="fert-bag-cell">
                     <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>MOP bag</title>
-                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fce4ec" stroke="#880e4f" stroke-width="1.5"/>
-                      <line x1="4" y1="30" x2="106" y2="30" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#f48fb1" stroke-width="0.8"/>
-                      <line x1="4" y1="102" x2="106" y2="102" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#f48fb1" stroke-width="0.8"/>
-                      <line x1="20" y1="22" x2="20" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#f48fb1" stroke-width="0.8"/>
-                      <rect x="0" y="68" width="110" height="34" fill="#880e4f"/>
-                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
-                      <line x1="14" y1="19" x2="96" y2="19" stroke="#880e4f" stroke-width="0.8" stroke-dasharray="4,3"/>
-                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
-                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">MOP</text>
-                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#f8bbd0">Muriate of Potash</text>
-                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#880e4f">45 kg NET</text>
-                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#880e4f">K₂O: 60%</text>
+                      <!-- Solid dark magenta bag body -->
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#880e4f" stroke="#4a0729" stroke-width="1.5"/>
+                      <!-- Top tied/crimped edge -->
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#880e4f" stroke="#4a0729" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#4a0729" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <!-- Bottom seam -->
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#880e4f" stroke="#4a0729" stroke-width="1"/>
+                      <!-- Prominent MOP text -->
+                      <text x="55" y="72" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="900" fill="#ffffff" letter-spacing="3">MOP</text>
+                      <!-- Prominent K2O: 60% -->
+                      <text x="55" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="800" fill="#ffeb3b" letter-spacing="1">K₂O: 60%</text>
+                      <!-- Small subtitle -->
+                      <text x="55" y="125" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" font-weight="600" fill="#f8bbd0" letter-spacing="0.5">MURIATE OF POTASH</text>
                     </svg>
                   </div>
                   <span class="fert-source" data-i18n="mop-src">Muriate of Potash — 60% K₂O</span>
@@ -681,18 +688,19 @@
                 <td>
                   <div class="fert-bag-cell">
                     <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>SSP bag</title>
-                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fafafa" stroke="#5d4037" stroke-width="1.5"/>
-                      <line x1="4" y1="30" x2="106" y2="30" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#d7ccc8" stroke-width="0.8"/>
-                      <line x1="4" y1="102" x2="106" y2="102" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#d7ccc8" stroke-width="0.8"/>
-                      <line x1="20" y1="22" x2="20" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#d7ccc8" stroke-width="0.8"/>
-                      <rect x="0" y="68" width="110" height="34" fill="#5d4037"/>
-                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
-                      <line x1="14" y1="19" x2="96" y2="19" stroke="#5d4037" stroke-width="0.8" stroke-dasharray="4,3"/>
-                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
-                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">SSP</text>
-                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#d7ccc8">Single Super Phosphate</text>
-                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#5d4037">45 kg NET</text>
-                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#5d4037">P₂O₅: 16%</text>
+                      <!-- Solid dark brown bag body -->
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#4e342e" stroke="#1b0e0a" stroke-width="1.5"/>
+                      <!-- Top tied/crimped edge -->
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#4e342e" stroke="#1b0e0a" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#1b0e0a" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <!-- Bottom seam -->
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#4e342e" stroke="#1b0e0a" stroke-width="1"/>
+                      <!-- Prominent SSP text -->
+                      <text x="55" y="72" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="900" fill="#ffffff" letter-spacing="3">SSP</text>
+                      <!-- Prominent P2O5: 16% -->
+                      <text x="55" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#ffeb3b" letter-spacing="1">P₂O₅: 16%</text>
+                      <!-- Small subtitle -->
+                      <text x="55" y="125" text-anchor="middle" font-family="Arial,sans-serif" font-size="7" font-weight="600" fill="#d7ccc8" letter-spacing="0.5">SINGLE SUPER PHOSPHATE</text>
                     </svg>
                   </div>
                   <span class="fert-source" id="dap-ssp-comp-label">SSP added to compensate for phosphorus removed from DAP — 16% P₂O₅</span>
@@ -723,18 +731,19 @@
                 <td>
                   <div class="fert-bag-cell">
                     <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>Urea bag</title>
-                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
-                      <line x1="4" y1="30" x2="106" y2="30" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#a5d6a7" stroke-width="0.8"/>
-                      <line x1="4" y1="102" x2="106" y2="102" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#a5d6a7" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#a5d6a7" stroke-width="0.8"/>
-                      <line x1="20" y1="22" x2="20" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#a5d6a7" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#a5d6a7" stroke-width="0.8"/>
-                      <rect x="0" y="68" width="110" height="34" fill="#2e7d32"/>
-                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
-                      <line x1="14" y1="19" x2="96" y2="19" stroke="#2e7d32" stroke-width="0.8" stroke-dasharray="4,3"/>
-                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
-                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">UREA</text>
-                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#a5d6a7">Nitrogen Fertilizer</text>
-                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#2e7d32">45 kg NET</text>
-                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#2e7d32">N: 46%</text>
+                      <!-- Solid dark green bag body -->
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#1b5e20" stroke="#0d3811" stroke-width="1.5"/>
+                      <!-- Top tied/crimped edge -->
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#1b5e20" stroke="#0d3811" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#0d3811" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <!-- Bottom seam -->
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#1b5e20" stroke="#0d3811" stroke-width="1"/>
+                      <!-- Prominent UREA text -->
+                      <text x="55" y="72" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="900" fill="#ffffff" letter-spacing="2">UREA</text>
+                      <!-- Prominent N: 46% -->
+                      <text x="55" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="800" fill="#ffeb3b" letter-spacing="1">N: 46%</text>
+                      <!-- Small subtitle -->
+                      <text x="55" y="125" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" font-weight="600" fill="#a5d6a7" letter-spacing="0.5">NITROGEN FERTILIZER</text>
                     </svg>
                   </div>
                   <span class="fert-source" data-i18n="urea-src-ssp">46% N — full FN dose (no N credit from SSP)</span>
@@ -747,18 +756,19 @@
                 <td>
                   <div class="fert-bag-cell">
                     <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>SSP bag</title>
-                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fafafa" stroke="#5d4037" stroke-width="1.5"/>
-                      <line x1="4" y1="30" x2="106" y2="30" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#d7ccc8" stroke-width="0.8"/>
-                      <line x1="4" y1="102" x2="106" y2="102" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#d7ccc8" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#d7ccc8" stroke-width="0.8"/>
-                      <line x1="20" y1="22" x2="20" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#d7ccc8" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#d7ccc8" stroke-width="0.8"/>
-                      <rect x="0" y="68" width="110" height="34" fill="#5d4037"/>
-                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
-                      <line x1="14" y1="19" x2="96" y2="19" stroke="#5d4037" stroke-width="0.8" stroke-dasharray="4,3"/>
-                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#efebe9" stroke="#5d4037" stroke-width="1"/>
-                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">SSP</text>
-                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#d7ccc8">Single Super Phosphate</text>
-                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#5d4037">45 kg NET</text>
-                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#5d4037">P₂O₅: 16%</text>
+                      <!-- Solid dark brown bag body -->
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#4e342e" stroke="#1b0e0a" stroke-width="1.5"/>
+                      <!-- Top tied/crimped edge -->
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#4e342e" stroke="#1b0e0a" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#1b0e0a" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <!-- Bottom seam -->
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#4e342e" stroke="#1b0e0a" stroke-width="1"/>
+                      <!-- Prominent SSP text -->
+                      <text x="55" y="72" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="900" fill="#ffffff" letter-spacing="3">SSP</text>
+                      <!-- Prominent P2O5: 16% -->
+                      <text x="55" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#ffeb3b" letter-spacing="1">P₂O₅: 16%</text>
+                      <!-- Small subtitle -->
+                      <text x="55" y="125" text-anchor="middle" font-family="Arial,sans-serif" font-size="7" font-weight="600" fill="#d7ccc8" letter-spacing="0.5">SINGLE SUPER PHOSPHATE</text>
                     </svg>
                   </div>
                   <span class="fert-source" data-i18n="ssp-src">Single Super Phosphate — 16% P₂O₅</span>
@@ -771,18 +781,19 @@
                 <td>
                   <div class="fert-bag-cell">
                     <svg width="52" height="70" viewBox="0 0 110 148" role="img"><title>MOP bag</title>
-                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#fce4ec" stroke="#880e4f" stroke-width="1.5"/>
-                      <line x1="4" y1="30" x2="106" y2="30" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="42" x2="106" y2="42" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="54" x2="106" y2="54" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="66" x2="106" y2="66" stroke="#f48fb1" stroke-width="0.8"/>
-                      <line x1="4" y1="102" x2="106" y2="102" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="114" x2="106" y2="114" stroke="#f48fb1" stroke-width="0.8"/><line x1="4" y1="126" x2="106" y2="126" stroke="#f48fb1" stroke-width="0.8"/>
-                      <line x1="20" y1="22" x2="20" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="40" y1="22" x2="40" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="60" y1="22" x2="60" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="80" y1="22" x2="80" y2="138" stroke="#f48fb1" stroke-width="0.8"/><line x1="100" y1="22" x2="100" y2="138" stroke="#f48fb1" stroke-width="0.8"/>
-                      <rect x="0" y="68" width="110" height="34" fill="#880e4f"/>
-                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
-                      <line x1="14" y1="19" x2="96" y2="19" stroke="#880e4f" stroke-width="0.8" stroke-dasharray="4,3"/>
-                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#f8bbd0" stroke="#880e4f" stroke-width="1"/>
-                      <text x="55" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#fff" letter-spacing="1">MOP</text>
-                      <text x="55" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#f8bbd0">Muriate of Potash</text>
-                      <text x="55" y="24" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#880e4f">45 kg NET</text>
-                      <text x="55" y="115" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#880e4f">K₂O: 60%</text>
+                      <!-- Solid dark magenta bag body -->
+                      <rect x="0" y="18" width="110" height="122" rx="6" fill="#880e4f" stroke="#4a0729" stroke-width="1.5"/>
+                      <!-- Top tied/crimped edge -->
+                      <rect x="8" y="13" width="94" height="11" rx="3" fill="#880e4f" stroke="#4a0729" stroke-width="1"/>
+                      <line x1="14" y1="19" x2="96" y2="19" stroke="#4a0729" stroke-width="0.8" stroke-dasharray="4,3"/>
+                      <!-- Bottom seam -->
+                      <rect x="8" y="136" width="94" height="8" rx="3" fill="#880e4f" stroke="#4a0729" stroke-width="1"/>
+                      <!-- Prominent MOP text -->
+                      <text x="55" y="72" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="900" fill="#ffffff" letter-spacing="3">MOP</text>
+                      <!-- Prominent K2O: 60% -->
+                      <text x="55" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="800" fill="#ffeb3b" letter-spacing="1">K₂O: 60%</text>
+                      <!-- Small subtitle -->
+                      <text x="55" y="125" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" font-weight="600" fill="#f8bbd0" letter-spacing="0.5">MURIATE OF POTASH</text>
                     </svg>
                   </div>
                   <span class="fert-source" data-i18n="mop-src">Muriate of Potash — 60% K₂O</span>
@@ -797,9 +808,6 @@
         </div>
       </div>
 
-      <div id="wheat-urea-reduction-note" style="display:none;margin-top:12px;padding:12px 16px;background:#e8f5e9;border:2px solid #2d6a4f;border-radius:10px;font-size:12.5px;font-weight:600;color:#1a3a2a;line-height:1.7;display:none;">
-        <span style="font-size:15px;margin-right:6px;">🌱</span><span id="urea-note-text"></span>
-      </div>
       <!-- Urea Application Schedule -->
       <div class="split-schedule" id="split-schedule" style="display:none;">
         <div class="split-pk-note" id="split-pk-note">Apply full dose of DAP/SSP and MOP at the time of sowing / transplanting.</div>
@@ -863,9 +871,9 @@ const T18N = {
     lang:'en', bodyClass:'',
     title:'PAU Khad Guide — Fertilizer Requirement Calculator',
     'logo-text':'PAU Khad Guide', 'logo-sub':'Right Fertilizer. Right Time. Right Dose.',
-    'hero-eyebrow':'Soil-Test Based Recommendation',
-    'hero-title':'Calculate your <em>precise</em> fertilizer requirement',
-    'hero-desc':'Enter your target yield and soil nutrient levels to get crop-specific N, P₂O₅ and K₂O recommendations in kg/acre.',
+    'hero-eyebrow':'Soil-test based recommendations for Rice, Wheat and Maize',
+    'hero-title':'Right fertilizer, right amount, <em>right time</em>',
+    'hero-desc':'Enter your target yield and soil values — know exactly how much Urea, DAP, SSP and MOP to use, and when.',
     'step1-pill':'Step 1','step1-title':'Select crop',
     'step2-pill':'Step 2','step2-title':'Target yield (T)',
     'step3-pill':'Step 3','step3-title':'Soil nutrient status',
@@ -883,6 +891,10 @@ const T18N = {
     'oc-warning':'For best results, use directly measured Soil N values.',
     'err-n-missing':'Enter either Soil Nitrogen (SN) or Organic Carbon (OC%) — at least one is required.',
     'err-oc-range':'OC% must be between 0 and 5.',
+    'prev-p-label':'Did the previous crop receive the recommended P₂O₅ dose?',
+    'prev-p-hint':'If yes, P₂O₅ dose will be set to zero for this crop.',
+    'prev-p-no':'No',
+    'prev-p-yes':'Yes — Skip P',
     'calc-btn-text':'Calculate fertilizer requirement',
     'results-heading':'Fertilizer recommendation',
     'unit-n':'kg N / acre','unit-p':'kg P₂O₅ / acre','unit-k':'kg K₂O / acre',
@@ -915,9 +927,9 @@ const T18N = {
     lang:'pa', bodyClass:'pa',
     title:'PAU Khad Guide — ਖਾਦ ਲੋੜ ਕੈਲਕੁਲੇਟਰ',
     'logo-text':'PAU Khad Guide','logo-sub':'ਸਹੀ ਖਾਦ · ਸਹੀ ਸਮੇਂ · ਸਹੀ ਮਾਤਰਾ',
-    'hero-eyebrow':'ਮਿੱਟੀ ਜਾਂਚ ਆਧਾਰਿਤ ਸਿਫ਼ਾਰਸ਼',
-    'hero-title':'ਆਪਣੀ ਫ਼ਸਲ ਲਈ <em>ਸਹੀ ਖਾਦ</em> ਦੀ ਲੋੜ ਜਾਣੋ',
-    'hero-desc':'ਟੀਚਾ ਝਾੜ ਅਤੇ ਮਿੱਟੀ ਦੇ ਪੌਸ਼ਟਿਕ ਤੱਤਾਂ ਦਾ ਪੱਧਰ ਦਰਜ ਕਰੋ ਅਤੇ ਫ਼ਸਲ ਅਨੁਸਾਰ N, P₂O₅ ਅਤੇ K₂O ਦੀ ਸਿਫ਼ਾਰਸ਼ ਕਿੱਲੋ/ਏਕੜ ਵਿੱਚ ਪ੍ਰਾਪਤ ਕਰੋ।',
+    'hero-eyebrow':'ਝੋਨਾ, ਕਣਕ ਤੇ ਮੱਕੀ ਲਈ ਮਿੱਟੀ-ਪਰਖ ਆਧਾਰਿਤ ਸਿਫ਼ਾਰਸ਼ਾਂ',
+    'hero-title':'ਸਹੀ ਖਾਦ, ਸਹੀ ਮਾਤਰਾ, <em>ਸਹੀ ਸਮਾਂ</em>',
+    'hero-desc':'ਆਪਣੀ ਟੀਚਾ ਝਾੜ ਤੇ ਮਿੱਟੀ ਦੇ ਅੰਕੜੇ ਪਾਓ — ਜਾਣੋ ਕਿ Urea, DAP, SSP ਤੇ MOP ਕਿੰਨੀ ਮਾਤਰਾ ਵਿੱਚ ਅਤੇ ਕਦੋਂ ਪਾਉਣੀ ਹੈ।',
     'step1-pill':'ਕਦਮ ੧','step1-title':'ਫ਼ਸਲ ਚੁਣੋ',
     'step2-pill':'ਕਦਮ ੨','step2-title':'ਟੀਚਾ ਝਾੜ (T)',
     'step3-pill':'ਕਦਮ ੩','step3-title':'ਮਿੱਟੀ ਦੇ ਪੌਸ਼ਟਿਕ ਤੱਤਾਂ ਦਾ ਪੱਧਰ',
@@ -935,6 +947,10 @@ const T18N = {
     'oc-warning':'ਵਧੀਆ ਨਤੀਜਿਆਂ ਲਈ ਸਿੱਧਾ ਮਿੱਟੀ N ਮੁੱਲ ਵਰਤੋ।',
     'err-n-missing':'SN ਜਾਂ OC% ਵਿੱਚੋਂ ਕੋਈ ਇੱਕ ਦਰਜ ਕਰੋ।',
     'err-oc-range':'OC% ਦਾ ਮੁੱਲ 0 ਅਤੇ 5 ਦੇ ਵਿਚਕਾਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।',
+    'prev-p-label':'ਕੀ ਪਿਛਲੀ ਫਸਲ ਨੂੰ ਸਿਫਾਰਸ਼ P₂O₅ ਮਾਤਰਾ ਪਾਈ ਗਈ ਸੀ?',
+    'prev-p-hint':'ਜੇ ਹਾਂ, ਤਾਂ ਇਸ ਫਸਲ ਲਈ P₂O₅ ਦੀ ਮਾਤਰਾ ਸਿਫ਼ਰ ਰੱਖੀ ਜਾਵੇਗੀ।',
+    'prev-p-no':'ਨਹੀਂ',
+    'prev-p-yes':'ਹਾਂ — P ਛੱਡੋ',
     'calc-btn-text':'ਖਾਦ ਦੀ ਲੋੜ ਹਿਸਾਬ ਕਰੋ',
     'results-heading':'ਖਾਦ ਸਿਫ਼ਾਰਸ਼',
     'unit-n':'ਕਿੱਲੋ N / ਏਕੜ','unit-p':'ਕਿੱਲੋ P₂O₅ / ਏਕੜ','unit-k':'ਕਿੱਲੋ K₂O / ਏਕੜ',
@@ -1053,7 +1069,6 @@ function clearResults(){
   const ob=document.getElementById('oc-result-badge');if(ob)ob.style.display='none';
   const sc=document.getElementById('split-schedule');if(sc)sc.style.display='none';
   const pp=document.getElementById('pau-panel');if(pp)pp.style.display='none';
-  const un=document.getElementById('wheat-urea-reduction-note');if(un)un.style.display='none';
   lastFN=lastFP=lastFK=null;
   lastDAP=lastDAP_ha=lastUd=lastUdha=lastUs=lastUsha=null; lastIsSmallDAP=false;
 }
@@ -1096,11 +1111,25 @@ function calculate(){
     vhigh: {low:0.00,medium:0.00,high:0.00},
   };
   const _pCat=SP_acre<5?'low':SP_acre<9?'medium':SP_acre<=20?'high':'vhigh';
-  const _OC=!isNaN(OC_raw)?OC_raw:null;
-  const _ocCat=_OC!==null?(_OC<0.4?'low':_OC<=0.6?'medium':'high'):null;
-
-  // Wheat N reduction: mulching & incorporated get 20 kg/acre less Urea = 9.2 kg N less
-  const _wheatUreaRed = (activeCrop==='wheat' && (activeResidue==='mulching'||activeResidue==='incorporated')) ? 20 : 0;
+  // OC handling:
+  //  • If user entered OC directly → use it.
+  //  • If user entered SN directly (OC missing) → back-calculate OC from SN
+  //    using inverse of SN = 94 + 68×OC%  →  OC% = (SN_kg/ha − 94) / 68
+  //    Clamp to nearest valid category if outside the typical range.
+  let _OC, _ocCat;
+  if(!isNaN(OC_raw)){
+    _OC = OC_raw;
+    _ocCat = _OC<0.4?'low':_OC<=0.6?'medium':'high';
+  } else if(!ocUsed && !isNaN(SN_raw)){
+    // Back-calculate OC silently from directly-entered SN (kg/acre → kg/ha → OC%)
+    const _ocBack = (SN_acre*A - 94) / 68;
+    // Clamp to nearest valid category: very low → low, very high → high
+    _OC = _ocBack;
+    _ocCat = _ocBack<0.4?'low':_ocBack<=0.6?'medium':'high';
+  } else {
+    _OC = null;
+    _ocCat = null;
+  }
 
   let FP, FP_ha, _t2Label='', _t2Applied=false, _t2Mult=1.0;
 
@@ -1178,19 +1207,6 @@ function calculate(){
   const rl=t('residue-labels'),cl=t('crop-labels');
   document.getElementById('results-crop-tag').textContent=activeCrop==='wheat'?t('crop-tag-wheat')(rl[activeResidue]):cl[activeCrop];
   const FNe=Math.max(0,FN),FPe=Math.max(0,FP),FKe=Math.max(0,FK);
-  // Urea reduction note for mulching/incorporated wheat
-  const _urNoteEl=document.getElementById('wheat-urea-reduction-note');
-  const _urNoteText=document.getElementById('urea-note-text');
-  if(_urNoteEl){
-    if(_wheatUreaRed>0){
-      _urNoteEl.style.display='block';
-      if(_urNoteText) _urNoteText.textContent=activeLang==='pa'
-        ?'ਯੂਰੀਆ ਖੁਰਾਕ 20 kg/ਏਕੜ ਘਟਾਈ ਗਈ — ਉਸੇ ਖੇਤ ਵਿੱਚ 3 ਜਾਂ ਵੱਧ ਸਾਲ ਲਗਾਤਾਰ ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਵਾਹੁਣ/ਮਲਚਿੰਗ ਦਾ ਲਾਭ।'
-        :'Urea dose reduced by 20 kg/acre — benefit of continuous rice residue incorporation/mulching in the same field for 3 or more years.';
-    } else {
-      _urNoteEl.style.display='none';
-    }
-  }
   const FNeha=Math.max(0,FN_ha),FPeha=Math.max(0,FP_ha),FKeha=Math.max(0,FK_ha);
   const MOP=FKe/0.60,MOPha=FKeha/0.60;
   const DAP=FPe/0.46,DAPha=FPeha/0.46,Ndap=DAP*0.18,Ndapha=DAPha*0.18;
@@ -1467,22 +1483,25 @@ function renderHelpContent(){
   document.getElementById('help-card-label').textContent=L?'ਵਰਤੋਂ ਕਿਵੇਂ ਕਰੀਏ':'How to Use';
   const hcMap={
     'hc-q1':L?'ਇਹ ਐਪ ਕੀ ਹੈ?':'What is this app?',
-    'hc-p1':L?'PAU Khad Guide ਤੁਹਾਨੂੰ ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਅਤੇ ਟੀਚਾ ਝਾੜ ਦੇ ਆਧਾਰ \'ਤੇ ਸਹੀ ਖਾਦ ਦੀ ਮਾਤਰਾ ਦੱਸਦੀ ਹੈ।':'PAU Khad Guide helps you calculate the right amount of fertilizer for your crop based on your soil test report and target yield.',
+    'hc-p1':L?'ਪੰਜਾਬ ਵਿੱਚ ਝੋਨਾ, ਕਣਕ ਤੇ ਮੱਕੀ ਲਈ ਮਿੱਟੀ-ਪਰਖ ਆਧਾਰਿਤ ਖਾਦ ਕੈਲਕੁਲੇਟਰ। ਇਹ ਤੁਹਾਡੇ ਖੇਤ ਲਈ ਸਹੀ ਖਾਦ, ਸਹੀ ਮਾਤਰਾ ਅਤੇ ਸਹੀ ਸਮਾਂ ਦੱਸਦੀ ਹੈ — ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਅਤੇ ਟੀਚਾ ਝਾੜ ਦੇ ਆਧਾਰ \'ਤੇ। PAU ਦੀਆਂ ਸਿਫ਼ਾਰਸ਼ਾਂ ਅਤੇ ਮਿੱਟੀ-ਪਰਖ ਫ਼ਸਲ ਪ੍ਰਤੀਕਿਰਿਆ (STCR) ਕੈਲੀਬ੍ਰੇਸ਼ਨਾਂ \'ਤੇ ਆਧਾਰਿਤ — ਇੱਕ ਅਜਿਹੀ ਪ੍ਰਣਾਲੀ ਜੋ ਮਿੱਟੀ ਜਾਂਚ ਨੂੰ ਅਸਲ ਫ਼ਸਲ ਪ੍ਰਤੀਕਿਰਿਆ ਨਾਲ ਜੋੜਦੀ ਹੈ।':'A soil-test based fertilizer calculator for Rice, Wheat and Maize in Punjab. It tells you the right fertilizer, the right amount, and the right time to apply it — for your specific field, based on your soil test report and target yield. Built on PAU recommendations combined with Soil Test Crop Response (STCR) calibrations — a method that links soil-test values to actual crop response.',
     'hc-q2':L?'ਵਰਤੋਂ ਦੇ 3 ਸੌਖੇ ਕਦਮ':'How to use — 3 simple steps',
-    'hc-s1':L?'ਫ਼ਸਲ ਚੁਣੋ ਅਤੇ ਕਣਕ ਲਈ ਰਹਿੰਦ-ਖੂੰਹਦ ਪ੍ਰਬੰਧਨ ਤਰੀਕਾ ਚੁਣੋ।':'Select your crop (Rice, Maize or Wheat) and, for Wheat, the rice residue management practice.',
-    'hc-s2':L?'ਟੀਚਾ ਝਾੜ ਕੁਇੰਟਲ/ਏਕੜ ਵਿੱਚ ਦਰਜ ਕਰੋ।':'Enter your target yield in quintals per acre.',
-    'hc-s3':L?'SN, SP, SK (kg/ਏਕੜ) ਦਰਜ ਕਰੋ ਜਾਂ OC% ਦਰਜ ਕਰੋ ਜੇ SN ਉਪਲਬਧ ਨਹੀਂ।':'Enter Soil N, Soil P and Soil K (kg/acre) from your soil test report — or enter OC% if Soil N is not available.',
+    'hc-s1':L?'ਫ਼ਸਲ ਚੁਣੋ (ਝੋਨਾ, ਮੱਕੀ ਜਾਂ ਕਣਕ)। ਕਣਕ ਲਈ, ਪਿਛਲੀ ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਦਾ ਪ੍ਰਬੰਧ ਵੀ ਚੁਣੋ — ਹਟਾਈ ਗਈ, ਵਾਹੀ ਗਈ, ਜਾਂ ਮਲਚਿੰਗ — ਕਿਉਂਕਿ ਇਹ ਮਿੱਟੀ ਵੱਲੋਂ ਮਿਲਣ ਵਾਲੀ ਨਾਈਟ੍ਰੋਜਨ ਨੂੰ ਬਦਲਦਾ ਹੈ।':'Select your crop (Rice, Maize or Wheat). For Wheat, also choose how the previous rice residue was handled — Removed, Incorporated, or Mulching — because this changes how much nitrogen the soil supplies.',
+    'hc-s2':L?'ਟੀਚਾ ਝਾੜ ਕੁਇੰਟਲ/ਏਕੜ ਵਿੱਚ ਦਰਜ ਕਰੋ। ਆਪਣੇ ਖੇਤ ਲਈ ਯਥਾਰਥਵਾਦੀ ਰੱਖੋ — ਐਪ ਹਰ ਫ਼ਸਲ ਲਈ ਉਚਿਤ ਸੀਮਾ ਦਿਖਾਉਂਦੀ ਹੈ।':'Enter your target yield in quintals per acre. Keep it realistic for your field — the app shows a sensible range for each crop.',
+    'hc-s3':L?'ਆਪਣੀ PAU ਮਿੱਟੀ ਜਾਂਚ ਰਿਪੋਰਟ ਤੋਂ Soil N, Soil P ਅਤੇ Soil K (kg/ਏਕੜ) ਦਰਜ ਕਰੋ — ਜਾਂ Soil N ਉਪਲਬਧ ਨਹੀਂ ਹੈ ਤਾਂ ਜੈਵਿਕ ਕਾਰਬਨ % ਦਰਜ ਕਰੋ। ਝੋਨੇ ਅਤੇ ਮੱਕੀ ਲਈ, ਇਹ ਵੀ ਪੁੱਛਿਆ ਜਾਵੇਗਾ ਕਿ ਕੀ ਪਿਛਲੀ ਫ਼ਸਲ ਨੂੰ ਪੂਰੀ P₂O₅ ਖੁਰਾਕ ਮਿਲੀ ਸੀ; ਜੇ ਹਾਂ, ਤਾਂ ਇਸ ਫ਼ਸਲ ਦੀ P ਲੋੜ ਘਟਾਈ ਜਾਵੇਗੀ।':'Enter Soil N, Soil P and Soil K (kg/acre) from your PAU soil test report — or enter Organic Carbon % if Soil N is not available. For Rice and Maize, you\'ll also be asked whether the previous crop received its full P₂O₅ dose; if yes, this crop\'s P need is reduced.',
     'hc-q3':L?'ਕੀ ਮਿਲਦਾ ਹੈ':'What you get',
-    'hc-g1':L?'ਖਾਦ ਦੀ ਲੋੜ kg/ਏਕੜ (ਅਤੇ kg/ha) ਵਿੱਚ':'Recommended fertilizer doses in kg/acre (and kg/ha)',
-    'hc-g2':L?'ਯੂਰੀਆ, DAP/SSP ਅਤੇ MOP ਦੀ ਮਾਤਰਾ — ਬੋਰੀਆਂ ਦੀ ਗਿਣਤੀ ਜਾਣੋ':'Ready-to-use product quantities — Urea, DAP or SSP, and MOP',
-    'hc-g3':L?'ਨਤੀਜੇ kg/ਏਕੜ ਅਤੇ kg/ha ਦੋਵਾਂ ਵਿੱਚ':'Results in both kg/acre and kg/ha',
+    'hc-g1':L?'N, P₂O₅ ਅਤੇ K₂O ਦੀ ਸਿਫ਼ਾਰਸ਼ੀ ਖੁਰਾਕ — kg/ਏਕੜ ਅਤੇ kg/ha ਦੋਵਾਂ ਵਿੱਚ':'Recommended N, P₂O₅ and K₂O doses in both kg/acre and kg/ha',
+    'hc-g2':L?'ਯੂਰੀਆ, DAP ਜਾਂ SSP, ਅਤੇ MOP ਦੀ ਮਾਤਰਾ — ਤਾਂ ਜੋ ਤੁਹਾਨੂੰ ਪਤਾ ਚੱਲੇ ਕਿਨੀਆਂ ਬੋਰੀਆਂ ਖਰੀਦਣੀਆਂ ਹਨ':'Ready-to-use product quantities — Urea, DAP or SSP, and MOP — so you know exactly how many bags to buy',
+    'hc-g3':L?'ਯੂਰੀਆ ਦੀ ਅਰਜ਼ੀ ਅਨੁਸੂਚੀ — ਬਿਜਾਈ ਵੇਲੇ, ਪਹਿਲੀ ਸਿੰਚਾਈ ਤੋਂ ਪਹਿਲਾਂ, ਅਤੇ ਦੂਜੀ ਸਿੰਚਾਈ ਤੋਂ ਪਹਿਲਾਂ ਕਿੰਨੀ ਪਾਉਣੀ ਹੈ':'A urea application schedule showing when to apply each split — at sowing, before first irrigation, and before second irrigation',
+    'hc-g4':L?'ਫਾਸਫੋਰਸ ਦੇ ਦੋ ਵਿਕਲਪ ਨਾਲ-ਨਾਲ — DAP ਵਰਤਣਾ (ਜੋ ਕੁਝ N ਵੀ ਦਿੰਦਾ ਹੈ) ਜਾਂ SSP ਵਰਤਣਾ':'Two phosphorus options side-by-side — using DAP (which also supplies some N) or using SSP',
     'hc-q4':L?'ਜ਼ਰੂਰੀ ਸੁਝਾਅ':'Important tips',
-    'hc-t1':L?'ਖਾਦ ਪਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਮਿੱਟੀ ਜਾਂਚ ਕਰਵਾਓ।':'Always get your soil tested before applying fertilizers — it saves money and improves yield.',
+    'hc-t1':L?'ਖਾਦ ਪਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਮਿੱਟੀ ਜਾਂਚ ਕਰਵਾਓ — ਇਹ ਪੈਸਾ ਬਚਾਉਂਦਾ ਹੈ ਅਤੇ ਝਾੜ ਵਧਾਉਂਦਾ ਹੈ।':'Always get your soil tested before applying fertilizers — it saves money and improves yield.',
     'hc-t2':L?'ਵਾਢੀ ਤੋਂ ਬਾਅਦ ਅਤੇ ਅਗਲੀ ਬਿਜਾਈ ਤੋਂ ਘੱਟੋ-ਘੱਟ 2–3 ਹਫ਼ਤੇ ਪਹਿਲਾਂ ਮਿੱਟੀ ਦੇ ਨਮੂਨੇ ਲਓ। PAU ਸਿਫ਼ਾਰਸ਼ ਕਰਦਾ ਹੈ ਕਿ ਉਸੇ ਖੇਤ ਦੀ ਮਿੱਟੀ ਹਰ 2–3 ਸਾਲ ਬਾਅਦ ਜਾਂਚੀ ਜਾਵੇ। ਹਮੇਸ਼ਾ ਮਨਜ਼ੂਰਸ਼ੁਦਾ ਮਿੱਟੀ ਜਾਂਚ ਪ੍ਰਯੋਗਸ਼ਾਲਾ ਤੋਂ ਜਾਂਚ ਕਰਵਾਓ।':'Collect soil samples after harvest and at least 2–3 weeks before the next sowing. PAU recommends soil testing every 2–3 years from the same field. Always use an approved soil testing laboratory for reliable results.',
-    'hc-t3':L?'ਜੇ ਮਿੱਟੀ ਵਿੱਚ ਕਾਫ਼ੀ ਪੌਸ਼ਟਿਕ ਤੱਤ ਹੈ, ਐਪ ਜ਼ੀਰੋ ਦਿਖਾਵੇਗੀ।':'If your soil nutrient level is high, the app may show zero dose — your soil already has enough.',
-    'hc-t4':L?'ਟੀਚਾ ਝਾੜ ਯਥਾਰਥਵਾਦੀ ਰੱਖੋ।':'Target yield should be realistic — over-estimating leads to wasteful fertilizer use.',
-    'hc-t5':L?'ਇਹ ਐਪ ਪੰਜਾਬ ਦੀਆਂ ਖੇਤੀ-ਜਲਵਾਯੂ ਹਾਲਤਾਂ ਲਈ ਕੈਲੀਬ੍ਰੇਟ ਕੀਤੀ ਗਈ ਹੈ।':'This app is calibrated for Punjab agro-climatic conditions and may not apply directly to other regions.',
-    'hc-t6':L?'ਅਸਧਾਰਨ ਮੌਸਮ, ਕੀੜੇ ਜਾਂ ਸਿੰਚਾਈ ਰੁਕਾਵਟਾਂ ਅਸਲ ਖਾਦ ਪ੍ਰਤੀਕਿਰਿਆ ਨੂੰ ਬਦਲ ਸਕਦੀਆਂ ਹਨ।':'Recommendations assume normal crop management; abnormal weather, pest pressure or irrigation constraints may alter fertilizer response.'
+    'hc-t3':L?'ਜੇ ਮਿੱਟੀ ਵਿੱਚ ਕਾਫ਼ੀ ਪੌਸ਼ਟਿਕ ਤੱਤ ਹੈ, ਐਪ ਉਸ ਤੱਤ ਲਈ ਸਿਫ਼ਰ ਖੁਰਾਕ ਦਿਖਾਵੇਗੀ — ਤੁਹਾਡੀ ਮਿੱਟੀ ਵਿੱਚ ਪਹਿਲਾਂ ਹੀ ਕਾਫ਼ੀ ਹੈ; ਖਰਚਾ ਬਚਾਓ।':'If your soil nutrient level is high, the app may show zero dose for that nutrient — your soil already has enough; save the cost.',
+    'hc-t4':L?'ਟੀਚਾ ਝਾੜ ਆਪਣੇ ਖੇਤ ਦੀਆਂ ਹਾਲਤਾਂ ਲਈ ਯਥਾਰਥਵਾਦੀ ਰੱਖੋ — ਜ਼ਿਆਦਾ ਅੰਦਾਜ਼ਾ ਲਾਉਣ ਨਾਲ ਖਾਦ ਦੀ ਬਰਬਾਦੀ ਹੁੰਦੀ ਹੈ।':'Target yield should be realistic for your field conditions — over-estimating leads to wasteful fertilizer use.',
+    'hc-t5':L?'ਇਹ ਐਪ ਪੰਜਾਬ ਦੀਆਂ ਖੇਤੀ-ਜਲਵਾਯੂ ਹਾਲਤਾਂ ਲਈ ਕੈਲੀਬ੍ਰੇਟ ਕੀਤੀ ਗਈ ਹੈ ਅਤੇ ਹੋਰ ਖੇਤਰਾਂ ਲਈ ਸਿੱਧੀ ਲਾਗੂ ਨਹੀਂ ਹੋ ਸਕਦੀ।':'This app is calibrated for Punjab agro-climatic conditions and may not apply directly to other regions.',
+    'hc-t6':L?'ਸਿਫ਼ਾਰਸ਼ਾਂ ਆਮ ਫ਼ਸਲ ਪ੍ਰਬੰਧਨ ਮੰਨ ਕੇ ਕੀਤੀਆਂ ਗਈਆਂ ਹਨ; ਅਸਧਾਰਨ ਮੌਸਮ, ਕੀੜੇ ਜਾਂ ਸਿੰਚਾਈ ਰੁਕਾਵਟਾਂ ਅਸਲ ਖਾਦ ਪ੍ਰਤੀਕਿਰਿਆ ਨੂੰ ਬਦਲ ਸਕਦੀਆਂ ਹਨ।':'Recommendations assume normal crop management; abnormal weather, pest pressure or irrigation constraints may alter actual fertilizer response.',
+    'hc-t7':L?'ਕਣਕ ਲਈ: ਜੇ ਉਸੇ ਖੇਤ ਵਿੱਚ 3 ਜਾਂ ਵੱਧ ਸਾਲ ਲਗਾਤਾਰ ਝੋਨੇ ਦੀ ਰਹਿੰਦ-ਖੂੰਹਦ ਵਾਹੀ ਜਾਂ ਮਲਚਿੰਗ ਕੀਤੀ ਗਈ ਹੈ, ਤਾਂ ਮਿੱਟੀ ਵਿੱਚ ਨਾਈਟ੍ਰੋਜਨ ਦੀ ਸਪਲਾਈ ਵਧਣ ਕਾਰਨ ਯੂਰੀਆ ਦੀ ਖੁਰਾਕ ਲਗਭਗ 20 kg/ਏਕੜ ਘਟਾਈ ਜਾ ਸਕਦੀ ਹੈ।':'For wheat: if rice residue has been continuously incorporated or mulched in the same field for 3 or more years, the urea dose can be reduced by about 20 kg/acre due to improved soil nitrogen supply.',
+    'hc-t8':L?'DAP/SSP ਅਤੇ MOP ਦੀ ਪੂਰੀ ਖੁਰਾਕ ਬਿਜਾਈ ਵੇਲੇ ਪਾਓ। ਯੂਰੀਆ ਨੂੰ ਅਨੁਸੂਚੀ ਅਨੁਸਾਰ ਵੰਡ ਕੇ ਪਾਓ — ਇਹ ਇੱਕੋ ਵਾਰ ਪਾਉਣ ਨਾਲੋਂ ਬਿਹਤਰ ਨਤੀਜੇ ਦਿੰਦਾ ਹੈ।':'Apply the full DAP/SSP and MOP dose at sowing. Split the urea dose as shown in the application schedule — it gives better results than applying it all at once.'
   };
   Object.entries(hcMap).forEach(([id,txt])=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
   const l2=document.getElementById('footer-line2');
