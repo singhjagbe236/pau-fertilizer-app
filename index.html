@@ -1136,8 +1136,12 @@ function calculate(){
 
   // ── FP: PAU Table 2 for wheat & maize; STCR for rice ─────────────
   // PAU Table 2 multipliers (rows=soil P cat, cols=OC cat)
+  // SP=low row is now uniform at 1.25 across all OC categories:
+  // When soil P is severely deficient (<5 kg/acre), OC has no effect on
+  // P recommendation — P cycling from SOM is too slow to offset P deficiency.
+  // Full +25% dose is needed regardless of OC status.
   const _t2={
-    low:   {low:1.25,medium:1.00,high:0.75},
+    low:   {low:1.25,medium:1.25,high:1.25},
     medium:{low:1.00,medium:0.75,high:0.50},
     high:  {low:0.75,medium:0.50,high:0.00},
     vhigh: {low:0.00,medium:0.00,high:0.00},
@@ -1170,7 +1174,7 @@ function calculate(){
   // Maize: PAU Table 2 on base 24 kg/acre (OC × soil P category)
   // Wheat: PAU Table 2 on base 25 kg/acre (OC × soil P category)
   const _adjLabel={
-    low:   {low:'+25%',medium:'standard',high:'-25%'},
+    low:   {low:'+25%',medium:'+25%',high:'+25%'},
     medium:{low:'standard',medium:'-25%',high:'-50%'},
     high:  {low:'-25%',medium:'-50%',high:'Nil'},
     vhigh: {low:'Nil',medium:'Nil',high:'Nil'}
